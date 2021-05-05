@@ -1,0 +1,39 @@
+{
+  "name": "culturecalculator",
+  "version": "1.0.0",
+  "description": "Best Practice Institute - Culture Calculator",
+  "main": "server/index.js",
+  "engines": {
+    "node": "12.18.3",
+    "npm": "6.14.6"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "server": "nodemon server/index.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lonewolfyuri/CultureCalculator"
+  },
+  "dependencies": {
+    "@google-cloud/language": "^4.1.0",
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "concurrently": "^5.3.0",
+    "cookie-session": "^1.4.0",
+    "es6-promise": "4.2.4",
+    "express": "^4.17.1",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.0",
+    "nodemon": "^2.0.4",
+    "phantom": "^6.3.0",
+    "webpage": "^0.3.0"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0"
+  },
+  "author": "George Gabricht",
+  "license": "ISC"
+}
