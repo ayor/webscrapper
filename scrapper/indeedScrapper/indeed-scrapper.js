@@ -1,4 +1,5 @@
 const indeed_uri = require('../../config/config').INDEED_URI;
+
 const __url = indeed_uri;
 
 
@@ -24,6 +25,7 @@ module.exports = {
             const result = [];
             comments.forEach(el => {
                 let [title, employee, comment] = el.split('\n');
+                
                 result.push({ title, employee, comment });
             });
             return result;
