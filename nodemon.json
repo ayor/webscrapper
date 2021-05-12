@@ -1,0 +1,5 @@
+{
+    "env": {
+        "INDEED_URI": "https://www.indeed.com/companies?from=gnav-homepage"
+    }
+}
