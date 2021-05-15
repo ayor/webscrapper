@@ -1,5 +1,6 @@
 {
     "env": {
-        "INDEED_URI": "https://www.indeed.com/companies?from=gnav-homepage"
+        "INDEED_URI": "https://www.indeed.com/companies?from=gnav-homepage",
+        "CAREER_BLISS_URI": "https://www.careerbliss.com/search"
     }
 }
