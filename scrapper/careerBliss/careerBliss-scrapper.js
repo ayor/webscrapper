@@ -1,12 +1,9 @@
 const CAREER_BLISS_URI = require('../../config/config').CAREER_BLISS_URI;
 
 
-
 module.exports = {
-    INDEED_SCRAPPER: async (browser, company_name) => {
-
+    CAREER_BLISS_SCRAPPER: async (browser, company_name) => {
         try {
-            
             let review_link = `https://www.careerbliss.com/search/?q=${company_name}&l=&typeFilter=review&sf=true`;
             let page = await browser.newPage();
             //set user agent to prevent the site from treating this scrapper as a bot;
@@ -24,18 +21,18 @@ module.exports = {
                 else
                     request.continue();
             });
-            const numberReviews = await page.$eval(".cmp-CompactHeaderMenuItem-count", count=> count.innerText);
+            const numberReviews = await page.$eval(".ng-binding", numReviews => numReviews.innerText.split("of ")[1].split(" ")[0]);
 
             const reviews = []; 
-            // const percentage = 0.2;
-            const percentile = numberReviews <= 200 ?  numberReviews : 200
+            const percentage = 0.2;
+            const percentile = numberReviews <= 200 ?  percentage * numberReviews : 100
 
             const numLinks = Math.floor(percentile/20); 
 
             for (let index = 0; index <= numLinks; index++) {
-                    await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?start=${20*index}`); 
+                    await page.goto(`https://www.careerbliss.com/search/?q=${company_name}&typeFilter=review&page=${index}&jid=`); 
                    
-                    const contents =  await page.$$eval("div.cmp-Review-content",  reviewcontents => {
+                    const contents =  await page.$$eval(".result.review",  reviewcontents => {
                     
                         
                         return reviewcontents
@@ -44,8 +41,9 @@ module.exports = {
                             
                     });
                     contents.forEach(el => {
-                        let [title, employee, comment] = el.split('\n');
-                        reviews.push({ title, employee, comment });
+                        let id = Math.random() * Math.random() * 10000;
+                        let [employee, comment] = el.split('\n');
+                        reviews.push({ id, employee, comment });
                     });
                 }
           

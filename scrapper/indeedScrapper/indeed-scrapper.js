@@ -24,33 +24,34 @@ module.exports = {
                 else
                     request.continue();
             });
-            const numberReviews = await page.$eval(".cmp-CompactHeaderMenuItem-count", count=> count.innerText);
+            const numberReviews = await page.$eval(".cmp-CompactHeaderMenuItem-count", count => count.innerText);
 
-            const reviews = []; 
-            // const percentage = 0.2;
-            const percentile = numberReviews <= 200 ?  numberReviews : 200
+            const reviews = [];
+            const percentage = 0.2;
+            const percentile = numberReviews <= 200 ? percentage * numberReviews : 100
 
-            const numLinks = Math.floor(percentile/20); 
+            const numLinks = Math.floor(percentile / 20);
 
             for (let index = 0; index <= numLinks; index++) {
-                    await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?start=${20*index}`); 
-                   
-                    const contents =  await page.$$eval("div.cmp-Review-content",  reviewcontents => {
-                    
-                        
-                        return reviewcontents
-                            .map(comment => comment.innerText.trim())
-                            
-                            
-                    });
-                    contents.forEach(el => {
-                        let [title, employee, comment] = el.split('\n');
-                        reviews.push({ title, employee, comment });
-                    });
-                }
-          
-            return {reviews, numberReviews};
-        
+                await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?start=${20 * index}`);
+
+                const contents = await page.$$eval("div.cmp-Review-content", reviewcontents => {
+
+
+                    return reviewcontents
+                        .map(comment => comment.innerText.trim())
+
+
+                });
+                contents.forEach(el => {
+                    let id = Math.random() * Math.random() * 10000;
+                    let [title, employee, comment] = el.split('\n');
+                    reviews.push({ id, title, employee, comment });
+                });
+            }
+
+            return { reviews, numberReviews };
+
         } catch (error) {
             throw error
         }
