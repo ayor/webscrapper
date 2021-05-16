@@ -21,6 +21,10 @@ module.exports = {
                 else
                     request.continue();
             });
+            const getrevs = await page.$(".ng-binding");
+            if(getrevs){
+
+         
             const numberReviews = await page.$eval(".ng-binding", numReviews => numReviews.innerText.split("of ")[1].split(" ")[0]);
 
             const reviews = []; 
@@ -47,8 +51,10 @@ module.exports = {
                     });
                 }
           
-            return {reviews, numberReviews};
-        
+                return {reviews, numberReviews};
+            }
+                return {reviews:[], numberReviews: null};
+                
         } catch (error) {
             throw error
         }

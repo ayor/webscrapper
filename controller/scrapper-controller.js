@@ -33,11 +33,11 @@ exports.getComments = async (req, res, next) => {
             const START_INDEX_GD_COMMENTS = (NUM_OF_COMMENTS_PER_PAGE * +good_pageId) - NUM_OF_COMMENTS_PER_PAGE;
             const START_INDEX_BD_COMMENTS = (NUM_OF_COMMENTS_PER_PAGE * +bad_pageId) - NUM_OF_COMMENTS_PER_PAGE;
  
-            const {reviews, numberReviews} = await pageScraper.scrapper.indeed_scrapper(browser, company_name);
-            if(numberReviews < 20){
-                let {other_reviews, additionalReview} = await pageScraper.scrapper.career_scrapper(browser, company_name);
-                reviews.concat(other_reviews);
-                numberReviews = +additionalReview + +numberReviews
+            let {reviews, numberReviews} = await pageScraper.scrapper.indeed_scrapper(browser, company_name);
+            if(numberReviews < 20 || !numberReviews){
+                let response = await pageScraper.scrapper.career_scrapper(browser, company_name);
+                reviews.concat(response.reviews);
+                numberReviews = +response.numberReviews + +numberReviews
             }
             let goodComments=[];
             let badComments=[];

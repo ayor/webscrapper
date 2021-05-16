@@ -23,8 +23,12 @@ module.exports = {
                     request.abort();
                 else
                     request.continue();
-            });
-            const numberReviews = await page.$eval(".cmp-CompactHeaderMenuItem-count", count => count.innerText);
+                });
+                const getRev = await page.$(".cmp-CompactHeaderMenuItem-count");
+                if(getRev){
+
+                
+                const numberReviews = await page.$eval(".cmp-CompactHeaderMenuItem-count", count => count.innerText);
 
             const reviews = [];
             const percentage = 0.2;
@@ -51,7 +55,8 @@ module.exports = {
             }
 
             return { reviews, numberReviews };
-
+        }
+        return {reviews : [], numberReviews: null}
         } catch (error) {
             throw error
         }
