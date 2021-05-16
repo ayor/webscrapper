@@ -12,12 +12,13 @@ const Search = props => {
     const dispatch = useDispatch()
 
     const handleChange = event => {
-        event.preventDefault();
         const value = event.target.value;
         setInputState(value);
 
     }
-    const handleSearchBtn = () => {
+    const handleSearchBtn = (event) => {
+        event.preventDefault();
+
         if (inputState === "") {
             dispatch(ERROR_MESSAGE("Kindly enter your company name"));
             setTimeout(() => {
