@@ -7,12 +7,12 @@ const HomePage = (props) => (
     <React.Fragment>
         <main className={WelcomePageClass.Welcome}>
             <div className="contain h-100 d-flex flex-column justify-content-center align-items-center">
-                <Banner />
                 <div className="text-center">
                     <img src={logo}
                         alt="most loved logo"
                         className="img-fluid " />
                 </div>
+                <Banner />
                 <Search handleBtnClick={props.handleSearchBtn} errorMessage={props.errorMessage} />
             </div>
         </main>

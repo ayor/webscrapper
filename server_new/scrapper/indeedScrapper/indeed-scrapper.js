@@ -1,6 +1,5 @@
 const indeed_uri = require('../../config/config').INDEED_URI;
 
-const __url = indeed_uri;
 
 
 module.exports = {
@@ -45,15 +44,19 @@ module.exports = {
                     return reviewcontents
                         .map(comment => comment.innerText.trim())
 
-
                 });
                 contents.forEach(el => {
                     let id = Math.random() * Math.random() * 10000;
                     let [title, employee, comment] = el.split('\n');
-                    reviews.push({ id, title, employee, comment });
+                    //split title for date
+                    let employeeData = employee.split('-');
+
+                   let year = employeeData[employeeData.length - 1]
+                    .split(',')[1];
+                    reviews.push({ id, year, title, employee, comment, scrapper : "indeed.com" });
                 });
             }
-
+            reviews.sort((a, b)=> b.year - a.year ); 
             return { reviews, numberReviews };
         }
         return {reviews : [], numberReviews: null}

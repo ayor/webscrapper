@@ -81,6 +81,7 @@ const GoodComments = props => {
                         </div>
                         <div>
                             <small className="text-muted">{comment.employee}</small>
+                            <small className="text-muted ml-2 ">from - ({comment.scrapper})</small>
                             <p className="border-bottom border-semi-info p-1 ">
                                 {comment.comment}</p>
                         </div>

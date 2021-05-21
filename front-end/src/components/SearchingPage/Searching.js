@@ -30,7 +30,7 @@ const Searching = props => {
     const fetchComments = async () => {
         try {
             const response = await axiosInstance({
-               
+
                 method: "POST",
                 data: {
                     company_name: companyName
@@ -43,36 +43,34 @@ const Searching = props => {
     }
 
     const changeMessages = () => {
-        
-            if (messageIndex < messages.length) {
-                let nexMessgeInd = messageIndex + 1;
-                setMessageIndex(nexMessgeInd)
-                setSearchMessage(messages[messageIndex])
-            } else {
-                setMessageIndex(0);
-                setSearchMessage(messages[0])
-            } 
+
+        if (messageIndex < messages.length) {
+            let nexMessgeInd = messageIndex + 1;
+            setMessageIndex(nexMessgeInd)
+            setSearchMessage(messages[messageIndex])
+        } else {
+            setMessageIndex(0);
+            setSearchMessage(messages[0])
+        }
 
 
     }
 
     useEffect(() => {
         setTimeout(() => {
-        changeMessages();
-    }, 2000);
-
-    return () => {
-        clearTimeout(()=>{
             changeMessages();
-        })
-    }
+        }, 2000);
     });
 
-    useEffect(()=>{
+    useEffect(() => {
+        let mounted = true;
+
         fetchComments().then(response => {
-            dispatch(COMMENT(response));
-            console.log(response);
-            props.history.push('/result');
+            if (mounted) {
+                dispatch(COMMENT(response));
+                console.log(response);
+                props.history.push('/result');
+            }
         })
             .catch(error => {
 
@@ -82,7 +80,9 @@ const Searching = props => {
 
             });
 
-    },[])
+        return () => { mounted = false; };
+
+    }, [])
 
     return (
         <React.Fragment>
@@ -97,7 +97,7 @@ const Searching = props => {
                         <ErrorHandler closeError={() => props.history.push('/')} errorMessage={errorMessage} />
                         <Emoji emojiClass={"display-4 " + SearchingClass.Emoji} symbol="❤️" label="love" />
 
-                        <p className={"h3 "+SearchingClass.LoadInfo}>{searchMessage}</p>
+                        <p className={"h3 " + SearchingClass.LoadInfo}>{searchMessage}</p>
                         <div className="loader my-4">
                             <Loading />
                         </div>

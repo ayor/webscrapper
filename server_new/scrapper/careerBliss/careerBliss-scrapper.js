@@ -47,7 +47,7 @@ module.exports = {
                     contents.forEach(el => {
                         let id = Math.random() * Math.random() * 10000;
                         let [employee, comment] = el.split('\n');
-                        reviews.push({ id, employee, comment });
+                        reviews.push({ id, employee, comment ,  scrapper : "CareerBliss.com"});
                     });
                 }
           
