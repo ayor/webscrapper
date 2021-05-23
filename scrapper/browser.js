@@ -5,7 +5,7 @@ const startBrowser = async () =>{
         let browser;
         console.log('opening the browser...'); 
         browser = puppeteer.launch({
-            args: ["--no-sandbox'],
+            args: ['--no-sandbox'],
             //executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
             'ignoreHTTPSErrors': true
         });
