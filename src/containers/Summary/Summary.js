@@ -18,7 +18,7 @@ const Summary = () => {
             <div className="row ">
                 <div className="col h-100 d-flex flex-column align-items-center">
                     <div className="mx-auto mt-2 w-75">
-                        {isSearching ? (<div className="text-center my-5"> <Loading /> </div>) : (
+                        {isSearching ? (<div className="text-center my-5 vh-75"> <Loading /> </div>) : (
                             <Switch>
                                 <Route path="/result" exact render={() => <GoodComments totalReviews={totalReviews} isSearching={isSearching} setSearching={(val)=> setSearching(val)} />} />
                                 <Route path="/result/bd-comments"  render={() => <BadComments totalReviews={totalReviews} isSearching={isSearching} setSearching={(val)=> setSearching(val)}
