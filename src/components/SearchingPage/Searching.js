@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Loading from '../Loading/Loading';
 import Emoji from '../Emoji/Emoji';
 import { axiosInstance } from "../../axios-instance";
@@ -23,7 +23,7 @@ const Searching = props => {
     const [errorMessage, setErrorMessage] = useState('');
     const [searchMessage, setSearchMessage] = useState(messages[0]);
     const [messageIndex, setMessageIndex] = useState(0);
-    const modalBtn = useRef();
+
 
     const dispatch = useDispatch();
 
@@ -73,12 +73,18 @@ const Searching = props => {
             }
         })
             .catch(error => {
-
-                setErrorMessage(`${error.message}, kindly try again later. 
+if(error.status === 503){
+    setErrorMessage(`we have noticed a connection problem, kindly check your connection and try again later. 
                 `);
-                modalBtn.current.click();
 
-            });
+            
+}else{
+    setErrorMessage(`An error occurred, kindly try again later. 
+    `);
+
+
+}});
+                
 
         return () => { mounted = false; };
 
@@ -86,15 +92,12 @@ const Searching = props => {
 
     return (
         <React.Fragment>
+                                    {errorMessage ? <ErrorHandler closeError={() => props.history.push('/')} errorMessage={errorMessage} />: null}
+
             <div className="row vh-100 mt-5">
                 <div className="col h-100 d-flex flex-column justify-content-center align-items-center">
                     <div className="search-text text-center mx-auto w-50">
-                        <button style={{
-                            display: 'none'
-                        }} type="button" ref={modalBtn} className="btn btn-semi-info" data-toggle="modal" data-target="#errorModal">
-                            Launch demo modal
-                        </button>
-                        <ErrorHandler closeError={() => props.history.push('/')} errorMessage={errorMessage} />
+                        
                         <Emoji emojiClass={"display-4 " + SearchingClass.Emoji} symbol="❤️" label="love" />
 
                         <p className={"h3 " + SearchingClass.LoadInfo}>{searchMessage}</p>
