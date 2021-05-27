@@ -8,7 +8,8 @@
     "npm": "6.14.6"
   },
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "AUTH_TOKEN=3d9603d1557b2e05cbb99a67b60cdd437af7d9ae URL=https://wextractor.com/api/v1/reviews/indeed node app.js",
+    "serve": "nodemon app.js"
   },
   "repository": {
     "type": "git",
