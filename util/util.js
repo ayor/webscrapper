@@ -6,7 +6,7 @@ const analyzeReview = (reviews)=>{
     let badComments=[];
 
     reviews.forEach(com => {
-      let resp = sentiment.analyze(com.comment);
+      let resp = sentiment.analyze(com.text);
       if(resp.score < 1){
           badComments.push(com);
           return;

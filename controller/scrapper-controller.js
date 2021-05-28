@@ -1,4 +1,5 @@
 
+const { default: axios } = require('axios');
 const { WET_TRACKER } = require('../config/config');
 const Analyze = require('../util/util');
 
@@ -20,10 +21,12 @@ exports.getComments = async (req, res, next) => {
             throw err;
         }
 
-        const response = await fetch(WET_TRACKER.URL, {
-            auth_token: WET_TRACKER.AUTH_TOKEN,
-            id: company_name,
-            offset: good_pageId || bad_pageId || 0
+        const response = await axios.get(WET_TRACKER.URL, {
+            params:{
+                auth_token: WET_TRACKER.AUTH_TOKEN,
+                id: company_name,
+                offset: good_pageId || bad_pageId || 0
+            } 
         });
 
         if (!good_pageId) {
@@ -38,19 +41,17 @@ exports.getComments = async (req, res, next) => {
         // const START_INDEX_BD_COMMENTS = (NUM_OF_COMMENTS_PER_PAGE * +bad_pageId) - NUM_OF_COMMENTS_PER_PAGE;
 
 
-        const reviews = await response.json();
-
         const { goodComments,
             badComments,
             goodPercent,
-            badPercent } = Analyze(reviews); 
+            badPercent } = Analyze(response.data.reviews); 
 
         res.status(200).json({
             comments: {
                 goodComments,
                 badComments
             },
-            totalReviews: numberReviews,
+            // totalReviews: numberReviews,
             goodPageId: good_pageId,
             badPageId: bad_pageId,
             goodPercent,
@@ -58,7 +59,7 @@ exports.getComments = async (req, res, next) => {
         })
 
     } catch (error) {
-        console.log("Could not resolve the browser instance => ", error);
+        // console.log("Could not resolve the browser instance => ", error);
         if (!error.status) {
             error.status = 500;
         }
