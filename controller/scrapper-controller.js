@@ -20,12 +20,11 @@ exports.getComments = async (req, res, next) => {
             err.status = 422;
             throw err;
         }
-
         const response = await axios.get(WET_TRACKER.URL, {
             params:{
                 auth_token: WET_TRACKER.AUTH_TOKEN,
                 id: company_name,
-                offset: good_pageId || bad_pageId || 0
+                offset: good_pageId *10|| bad_pageId*10 || 0
             } 
         });
 
