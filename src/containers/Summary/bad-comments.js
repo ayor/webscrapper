@@ -40,7 +40,7 @@ const BadComments = props => {
             return;
         }
         let newPage = badPageId - 1;
-       
+
         const response = await GET_CONTENT(newPage, companyName);
         if (response) {
             props.setSearching(false);
@@ -81,10 +81,11 @@ const BadComments = props => {
                             <span className="fa fa-user-circle fa-2x text-dark mr-2"></span>
                         </div>
                         <div>
-                            <small className="text-muted">{comment.employee}</small>
-                            <small className="text-muted ml-2 ">from - ({comment.scrapper})</small>
+                            <small className="text-muted">{comment.reviewer}, {comment.location}  {new Date().toDateString(comment.datetime)}</small>
+                            {/* <small className="text-muted ml-2 ">from - ({comment.scrapper})</small> */}
+                            <small className="text-muted ml-2 ">from - (indeed.com)</small>
                             <p className="border-bottom border-semi-info p-1 ">
-                                {comment.comment}</p>
+                                {comment.text}</p>
                         </div>
 
                     </div>
@@ -98,7 +99,7 @@ const BadComments = props => {
         <React.Fragment>
             <div className={"text-muted " + SummaryClass.Comments}>
                 <h3 className="h3 text-semi-info text-center my-1"> {badPercent}% <Emoji emojiClass="mr-2 " symbol="😠" label="not-impressed" /> think you can do better <span className="text-danger font-weight-bold text-uppercase">{companyName}</span></h3>
-                <p className={"text-dark ml-5 p-3 bg-warning h4 "+SummaryClass.totalReviews}>Total Reviews: {props.totalReviews}</p>
+                <p className={"text-dark ml-5 p-3 bg-warning h4 " + SummaryClass.totalReviews}>Total Reviews: {props.totalReviews}</p>
 
                 <div className="comments mt-3">
                     <ul className="list-unstyled">
