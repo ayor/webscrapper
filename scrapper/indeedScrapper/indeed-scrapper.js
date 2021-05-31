@@ -33,7 +33,7 @@ module.exports = {
 
             const reviews = [];
             const percentage = 0.2;
-            const percentile = numberReviews <= 200 ? percentage * numberReviews : 100
+            const percentile = numberReviews <= 500 ? percentage * numberReviews : 100
 
             const numLinks = Math.floor(percentile / 20);
 
@@ -42,13 +42,12 @@ module.exports = {
 
                 const contents = await page.$$eval("div.cmp-Review-content", reviewcontents => {
 
-
                     return reviewcontents
                         .map(comment => comment.innerText.trim())
 
                 });
                 contents.forEach(el => {
-                    let id = Math.random() * Math.random() * 10000;
+                    let id = Math.random() * Math.random() * 1000000;
                     let [title, employee, comment] = el.split('\n');
                     //split title for date
                     let employeeData = employee.split('-');
