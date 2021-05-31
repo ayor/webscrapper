@@ -24,7 +24,6 @@ const Searching = props => {
     const [searchMessage, setSearchMessage] = useState(messages[0]);
     const [messageIndex, setMessageIndex] = useState(0);
 
-
     const dispatch = useDispatch();
 
     const fetchComments = async () => {
@@ -52,8 +51,6 @@ const Searching = props => {
             setMessageIndex(0);
             setSearchMessage(messages[0])
         }
-
-
     }
 
     useEffect(() => {
@@ -73,18 +70,19 @@ const Searching = props => {
             }
         })
             .catch(error => {
-if(error.status === 503){
-    setErrorMessage(`we have noticed a connection problem, kindly check your connection and try again later. 
+                if (error.status === 503) {
+                    setErrorMessage(`we have noticed a connection problem, kindly check your connection and try again later. 
                 `);
 
-            
-}else{
-    setErrorMessage(`An error occurred, kindly try again later. 
+
+                } else {
+                    setErrorMessage(`An error occurred, kindly try again later. 
     `);
 
 
-}});
-                
+                }
+            });
+
 
         return () => { mounted = false; };
 
@@ -92,12 +90,12 @@ if(error.status === 503){
 
     return (
         <React.Fragment>
-                                    {errorMessage ? <ErrorHandler closeError={() => props.history.push('/')} errorMessage={errorMessage} />: null}
+            {errorMessage ? <ErrorHandler closeError={() => props.history.push('/')} errorMessage={errorMessage} /> : null}
 
             <div className="row vh-100 mt-5">
                 <div className="col h-100 d-flex flex-column justify-content-center align-items-center">
                     <div className="search-text text-center mx-auto w-50">
-                        
+
                         <Emoji emojiClass={"display-4 " + SearchingClass.Emoji} symbol="❤️" label="love" />
 
                         <p className={"h3 " + SearchingClass.LoadInfo}>{searchMessage}</p>
