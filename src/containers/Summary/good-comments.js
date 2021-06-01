@@ -80,11 +80,11 @@ const GoodComments = props => {
                             <span className="fa fa-user-circle fa-2x text-dark mr-2"></span>
                         </div>
                         <div>
-                            <small className="text-muted">{comment.reviewer}, {comment.location} - {new Date(comment.datetime).toDateString()}</small>
-                            {/* <small className="text-muted ml-2 ">from - ({comment.scrapper})</small> */}
-                            <small className="text-muted ml-2 ">from - (indeed.com)</small>
+                        <small className="text-muted">{comment.employee} </small>
+                            <small className="text-muted ml-2 ">from - ({comment.scrapper})</small>
+                            {/* <small className="text-muted ml-2 ">from - (indeed.com)</small> */}
                             <p className="border-bottom border-semi-info p-1 ">
-                                {comment.text}</p>
+                                {comment.comment}</p>
                         </div>
 
                     </div>
@@ -108,7 +108,7 @@ const GoodComments = props => {
 
                 </div>
             </div>
-            {props.isSearching || comments.length < 5 ? null : (<Pagination
+            {props.isSearching || comments.length < 20 ? null : (<Pagination
                 pageId={goodPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
