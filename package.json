@@ -8,7 +8,7 @@
     "npm": "6.14.6"
   },
   "scripts": {
-    "start": "AUTH_TOKEN=3d9603d1557b2e05cbb99a67b60cdd437af7d9ae node app.js",
+    "start": "AUTH_TOKEN=3d9603d1557b2e05cbb99a67b60cdd437af7d9ae REDIS_URL=redis://127.0.0.1:6379 node app.js",
     "serve": "nodemon app.js"
   },
   "repository": {
