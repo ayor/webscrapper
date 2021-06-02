@@ -8,6 +8,8 @@ module.exports = {
         try {
             let review_link = `https://www.indeed.com/cmp/${company_name}/reviews`
             let page = await browser.newPage();
+            await page.setDefaultTimeout(0);
+
             //set user agent to prevent the site from treating this scrapper as a bot;
             const userAgent = 'Mozilla/5.0 (X11; Linux x86_64)' +
                 'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.39 Safari/537.36';
@@ -31,7 +33,7 @@ module.exports = {
 
             const reviews = [];
             const percentage = 0.2;
-            const percentile = numberReviews <= 200 ? percentage * numberReviews : 100
+            const percentile = numberReviews <= 500 ? percentage * numberReviews : 100
 
             const numLinks = Math.floor(percentile / 20);
 
@@ -40,13 +42,12 @@ module.exports = {
 
                 const contents = await page.$$eval("div.cmp-Review-content", reviewcontents => {
 
-
                     return reviewcontents
                         .map(comment => comment.innerText.trim())
 
                 });
                 contents.forEach(el => {
-                    let id = Math.random() * Math.random() * 10000;
+                    let id = Math.random() * Math.random() * 1000000;
                     let [title, employee, comment] = el.split('\n');
                     //split title for date
                     let employeeData = employee.split('-');

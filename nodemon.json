@@ -1,6 +1,9 @@
 {
     "env": {
         "INDEED_URI": "https://www.indeed.com/companies?from=gnav-homepage",
-        "CAREER_BLISS_URI": "https://www.careerbliss.com/search"
+        "CAREER_BLISS_URI": "https://www.careerbliss.com/search",
+        "AUTH_TOKEN":"3d9603d1557b2e05cbb99a67b60cdd437af7d9ae",
+        "URL": "https://wextractor.com/api/v1/reviews/indeed",
+        "REDIS_URL": "redis://127.0.0.1:6379"
     }
 }
