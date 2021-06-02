@@ -3,7 +3,6 @@ const AnalyzeReview = require('../util/util');
 const NUM_OF_COMMENTS_PER_PAGE = 20;
 const redis = require('redis');
 const REDIS_URL = 6379; // process.env.REDIS_URL || 
-const client = redis.createClient(REDIS_URL);
 
 let client
 if (process.env.REDISCLOUD_URL) {
