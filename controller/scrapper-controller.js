@@ -2,21 +2,9 @@
 const AnalyzeReview = require('../util/util');
 const NUM_OF_COMMENTS_PER_PAGE = 20;
 const redis = require('redis');
-// const REDIS_URL = 6379; // process.env.REDIS_URL || 
 
-// let client;
-// if (process.env.REDI÷SCLOUD_URL) {
-//     let redisURL = process.env.REDISCLOUD_URL;
-//     client = redis.createClient(redisURL)
-// } else {
-//     client = redis.createClient()
-// };
-// let redis = require('redis');
 let url = require('url');
-// let redisURL = url.parse(process.env.REDISCLOUD_URL);
 let client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
-
-client.auth(redisURL.auth.split(":")[1]);
 
 
 exports.getComments = async (req, res, next) => {
