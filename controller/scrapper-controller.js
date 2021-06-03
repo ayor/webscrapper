@@ -13,8 +13,9 @@ const redis = require('redis');
 // };
 // let redis = require('redis');
 let url = require('url');
-let redisURL = url.parse(process.env.REDISCLOUD_URL);
-let client = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
+// let redisURL = url.parse(process.env.REDISCLOUD_URL);
+let client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
+
 client.auth(redisURL.auth.split(":")[1]);
 
 
