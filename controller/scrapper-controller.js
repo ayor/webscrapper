@@ -5,13 +5,13 @@ const redis = require('redis');
 // const REDIS_URL = 6379; // process.env.REDIS_URL || 
 
 // let client;
-// if (process.env.REDISCLOUD_URL) {
+// if (process.env.REDI÷SCLOUD_URL) {
 //     let redisURL = process.env.REDISCLOUD_URL;
 //     client = redis.createClient(redisURL)
 // } else {
 //     client = redis.createClient()
 // };
-let redis = require('redis');
+// let redis = require('redis');
 let url = require('url');
 let redisURL = url.parse(process.env.REDISCLOUD_URL);
 let client = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
