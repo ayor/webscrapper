@@ -6,7 +6,7 @@ module.exports = {
     INDEED_SCRAPPER: async (browser, company_name) => {
 
         try {
-            let review_link = `https://www.indeed.com/cmp/${company_name}/reviews`
+            let review_link = `https://www.indeed.com/cmp/${company_name}/reviews?fcountry=ALL`
             let page = await browser.newPage();
             await page.setDefaultTimeout(0);
 
@@ -33,12 +33,12 @@ module.exports = {
 
             const reviews = [];
             const percentage = 0.2;
-            const percentile = numberReviews <= 500 ? percentage * numberReviews : 100
+            const percentile = numberReviews <= 500 ? percentage * numberReviews : 200;
 
             const numLinks = Math.floor(percentile / 20);
 
             for (let index = 0; index <= numLinks; index++) {
-                await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?start=${20 * index}`);
+                await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?fcountry=ALL&start=${20 * index}`);
 
                 const contents = await page.$$eval("div.cmp-Review-content", reviewcontents => {
 

@@ -9,7 +9,6 @@ const client = redis.createClient(REDIS_URL);
 
 const analyzeReview = async (company_name) => {
     try {
-        let test = sentiment.analyze("I really didn’t enjoy my time here. The workload was so heavy and I wasn’t treated well at all. I was basically just an errand boy for everyone else that was important, and all the other interns got treated the same way.");
         let goodComments = [];
         let badComments = [];
 
@@ -21,7 +20,7 @@ const analyzeReview = async (company_name) => {
             reviews.concat(response.reviews);
             numberReviews = +response.numberReviews + +numberReviews
         }
-
+//analysis each review comment 
         reviews.forEach(com => {
             let resp = sentiment.analyze(com.comment);
             if (resp.score < 1) {
