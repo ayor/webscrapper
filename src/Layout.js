@@ -10,7 +10,7 @@ const Layout = props => {
     return (
         <Router>
             <Switch>
-                <Route path="/" exact component={Welcome} />
+                <Route path="/" component={Welcome} />
             </Switch>
         </Router>
     )

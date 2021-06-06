@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useSelector } from 'react-redux'
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import HomePage from './HomePage';
 import Searching from '../../components/SearchingPage/Searching';
 import Footer from '../../components/Footer/Footer';
@@ -8,14 +9,17 @@ import NavBar from '../../components/NavBar/NavBar';
 
 
 const Welcome = props => {
+    const { companyName } = useSelector(state => state);
+
     return (
         <React.Fragment>
             <Router>
-            <NavBar />
+                <NavBar />
                 <Switch>
                     <Route path='/' exact render={() => <HomePage {...props} />} />
-                    <Route path='/search' render={() => <Searching {...props} />} />
-                    <Route path="/result" component={Summary} />
+                    <Route path='/search' render={() => companyName === "" ? <Redirect path='/' /> : <Searching {...props} />} />
+                    <Route path="/result" render={() => companyName === "" ? <Redirect path='/' /> : <Summary />} />
+                    <Redirect to="/" />
                 </Switch>
             </Router>
             <Footer />
