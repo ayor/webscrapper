@@ -97,8 +97,6 @@ exports.getComments = async (req, res, next) => {
                     });
                 }
             }
-
-
         })
     } catch (error) {
         // console.log("Could not resolve the browser instance => ", error);

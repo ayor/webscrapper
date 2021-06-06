@@ -24,43 +24,45 @@ module.exports = {
                     request.abort();
                 else
                     request.continue();
-                });
-                const getRev = await page.$(".cmp-CompactHeaderMenuItem-count");
-                if(getRev){
+            });
+            const getRev = await page.$(".cmp-CompactHeaderMenuItem-count");
+            if (getRev) {
 
-                
+
                 const numberReviews = await page.$eval(".cmp-CompactHeaderMenuItem-count", count => count.innerText);
+                const [totalReviews, other] = numberReviews.split("K");
 
-            const reviews = [];
-            const percentage = 0.2;
-            const percentile = numberReviews <= 500 ? percentage * numberReviews : 200;
+                numberReviews = other === "" ? totalReviews * 1000 : totalReviews;
+                const reviews = [];
+                const percentage = 0.01;
+                const percentile = numberReviews >= 500 ? percentage * numberReviews : 200;
 
-            const numLinks = Math.floor(percentile / 20);
+                const numLinks = Math.floor(percentile / 20);
 
-            for (let index = 0; index <= numLinks; index++) {
-                await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?fcountry=ALL&start=${20 * index}`);
+                for (let index = 0; index <= numLinks; index++) {
+                    await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?fcountry=ALL&start=${20 * index}`);
 
-                const contents = await page.$$eval("div.cmp-Review-content", reviewcontents => {
+                    const contents = await page.$$eval("div.cmp-Review-content", reviewcontents => {
 
-                    return reviewcontents
-                        .map(comment => comment.innerText.trim())
+                        return reviewcontents
+                            .map(comment => comment.innerText.trim())
 
-                });
-                contents.forEach(el => {
-                    let id = Math.random() * Math.random() * 1000000;
-                    let [title, employee, comment] = el.split('\n');
-                    //split title for date
-                    let employeeData = employee.split('-');
+                    });
+                    contents.forEach(el => {
+                        let id = Math.random() * Math.random() * 1000000;
+                        let [title, employee, comment] = el.split('\n');
+                        //split title for date
+                        let employeeData = employee.split('-');
 
-                   let year = employeeData[employeeData.length - 1]
-                    .split(',')[1];
-                    reviews.push({ id, year, title, employee, comment, scrapper : "indeed.com" });
-                });
+                        // let year = employeeData[employeeData.length - 1]
+                        //     .split(',')[1];
+                        reviews.push({ id, title, employee, comment, scrapper: "indeed.com" });
+                    });
+                }
+                // reviews.sort((a, b) => b.year - a.year);
+                return { reviews, numberReviews };
             }
-            reviews.sort((a, b)=> b.year - a.year ); 
-            return { reviews, numberReviews };
-        }
-        return {reviews : [], numberReviews: null}
+            return { reviews: [], numberReviews: null }
         } catch (error) {
             throw error
         }
