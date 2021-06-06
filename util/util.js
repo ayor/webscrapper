@@ -13,10 +13,10 @@ const analyzeReview = async (company_name) => {
         let badComments = [];
 
         let browser = await puppeteerBrowser();
-        let {reviews, numberReviews} = await pageScraper.scrapper.indeed_scrapper(browser, company_name);
+        let {reviews, numberReviews} = await pageScraper.scrapper.glassdoor_scrapper(browser, company_name);
 
-        if (numberReviews < 20 || !numberReviews) {
-            let response = await pageScraper.scrapper.career_scrapper(browser, company_name);
+        if (reviews.length < 20 || !numberReviews) {
+            let response = await pageScraper.scrapper.glassdoor_scrapper(browser, company_name);
             reviews.concat(response.reviews);
             numberReviews = +response.numberReviews + +numberReviews
         }
@@ -29,7 +29,7 @@ const analyzeReview = async (company_name) => {
             }
             goodComments.push(com);
         });
-
+        // updatedReviews.reduce((acc, val) => acc.concat[val],[])
         return {
             goodComments,
             badComments,
