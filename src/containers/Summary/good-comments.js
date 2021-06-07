@@ -108,7 +108,7 @@ const GoodComments = props => {
 
                 </div>
             </div>
-            {comments.length <= 0 ? null : <Pagination
+            {comments.length <= 0 || props.isSearching ? null : <Pagination
                 pageId={goodPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
