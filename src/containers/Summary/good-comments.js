@@ -61,7 +61,7 @@ const GoodComments = props => {
         }
 
     }
-    let __goodComments = (<div className=" text-center">
+    let __goodComments = (<div className="vh-75 text-center">
         <p
             className="h3 text-center text-muted my-5 p-5">
             Ooops looks like nothing has been said so far..
