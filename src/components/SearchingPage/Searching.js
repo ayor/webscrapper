@@ -26,20 +26,7 @@ const Searching = props => {
 
     const dispatch = useDispatch();
 
-    const fetchComments = async () => {
-        try {
-            const response = await axiosInstance({
-
-                method: "POST",
-                data: {
-                    company_name: companyName
-                }
-            })
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
-    }
+  
 
     const changeMessages = () => {
 
@@ -61,11 +48,24 @@ const Searching = props => {
 
     useEffect(() => {
         let mounted = true;
+        const fetchComments = async () => {
+            try {
+                const response = await axiosInstance({
+    
+                    method: "POST",
+                    data: {
+                        company_name: companyName
+                    }
+                })
+                return response.data;
+            } catch (error) {
+                throw error;
+            }
+        };
 
         fetchComments().then(response => {
             if (mounted) {
                 dispatch(COMMENT(response));
-                console.log(response);
                 props.history.push('/result');
             }
         })
@@ -86,7 +86,7 @@ const Searching = props => {
 
         return () => { mounted = false; };
 
-    }, [])
+    },[companyName,props, dispatch])
 
     return (
         <React.Fragment>
