@@ -29,13 +29,13 @@ module.exports = {
             if (getRev) {
 
 
-                const numberReviews = await page.$eval(".cmp-CompactHeaderMenuItem-count", count => count.innerText);
-                const [totalReviews, other] = numberReviews.split("K");
+                let numberReviews = await page.$eval(".cmp-CompactHeaderMenuItem-count", count => count.innerText);
+                const [totalReviews, other] = numberReviews.split("k");
 
-                numberReviews = other === "" ? totalReviews * 1000 : totalReviews;
+                __numberReviews = other === "" ? totalReviews * 1000 : totalReviews;
                 const reviews = [];
                 const percentage = 0.01;
-                const percentile = numberReviews >= 500 ? percentage * numberReviews : 200;
+                const percentile = __numberReviews >= 500 ? percentage * __numberReviews : 200;
 
                 const numLinks = Math.floor(percentile / 20);
 
@@ -54,8 +54,8 @@ module.exports = {
                         //split title for date
                         let employeeData = employee.split('-');
 
-                        // let year = employeeData[employeeData.length - 1]
-                        //     .split(',')[1];
+                        let year = employeeData[employeeData.length - 1]
+                            .split(',')[1];
                         reviews.push({ id, title, employee, comment, scrapper: "indeed.com" });
                     });
                 }
