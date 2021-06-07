@@ -108,11 +108,11 @@ const GoodComments = props => {
 
                 </div>
             </div>
-            {props.isSearching || comments.length < 20 ? null : (<Pagination
+            (<Pagination
                 pageId={goodPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
-            />)}
+            />)
         </React.Fragment>
     )
 }
