@@ -38,8 +38,8 @@ exports.getComments = async (req, res, next) => {
             if (!data) {
                 const { goodComments, badComments, numberReviews } = await AnalyzeReview(company_name);
 
-                let goodPercent = ((goodComments.length / (goodComments.length + badComments.length)) * 100).toFixed(2);
-                let badPercent = (100 - goodPercent).toFixed(2);
+                let goodPercent = ((goodComments.length / (goodComments.length + badComments.length)) * 100).toFixed(2) || 0;
+                let badPercent = (100 - goodPercent).toFixed(2) || 0;
 
 
                 client.set(company_name, JSON.stringify({
@@ -49,7 +49,7 @@ exports.getComments = async (req, res, next) => {
                     goodPageId,
                     badPageId,
                     badPercent,
-                    totalReviews: numberReviews
+                    totalReviews: numberReviews || 0,
                 }));
 
                 res.status(200).json({
@@ -57,7 +57,7 @@ exports.getComments = async (req, res, next) => {
                         goodComments: goodComments.splice(START_INDEX_GD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE),
                         badComments: badComments.splice(START_INDEX_BD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE)
                     },
-                    totalReviews: numberReviews,
+                    totalReviews: numberReviews || 0,
                     goodPageId,
                     badPageId,
                     goodPercent,
@@ -65,8 +65,19 @@ exports.getComments = async (req, res, next) => {
                 })
             } else {
                 data = JSON.parse(data);
+                //if data exists and does not have some value try to scrape again 
+
+                //if data exists with value
                 if (data.company_name == company_name && (data.goodPageId === goodPageId || data.badPageId === badPageId)) {
                     let { goodComments, badComments } = data.comments;
+
+                    if(goodComments.length < 20 || badComments.length < 20){
+                        let response = await AnalyzeReview(company_name);
+                        goodComments = response.goodComments;
+                        badComments = response.badComments;
+                        numberReviews = response.numberReviews;
+ 
+                    }
 
                     
                     client.set(company_name, JSON.stringify({
@@ -87,8 +98,6 @@ exports.getComments = async (req, res, next) => {
                     });
                 }
             }
-
-
         })
     } catch (error) {
         // console.log("Could not resolve the browser instance => ", error);

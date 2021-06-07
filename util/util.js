@@ -9,19 +9,18 @@ const client = redis.createClient(REDIS_URL);
 
 const analyzeReview = async (company_name) => {
     try {
-        let test = sentiment.analyze("I really didn’t enjoy my time here. The workload was so heavy and I wasn’t treated well at all. I was basically just an errand boy for everyone else that was important, and all the other interns got treated the same way.");
         let goodComments = [];
         let badComments = [];
 
         let browser = await puppeteerBrowser();
         let {reviews, numberReviews} = await pageScraper.scrapper.indeed_scrapper(browser, company_name);
 
-        if (numberReviews < 20 || !numberReviews) {
-            let response = await pageScraper.scrapper.career_scrapper(browser, company_name);
+        if (reviews.length < 20 || !numberReviews) {
+            let response = await pageScraper.scrapper.glassdoor_scrapper(browser, company_name);
             reviews.concat(response.reviews);
-            numberReviews = +response.numberReviews + +numberReviews
+            numberReviews = response.numberReviews
         }
-
+//analysis each review comment 
         reviews.forEach(com => {
             let resp = sentiment.analyze(com.comment);
             if (resp.score < 1) {
@@ -30,7 +29,7 @@ const analyzeReview = async (company_name) => {
             }
             goodComments.push(com);
         });
-
+        // updatedReviews.reduce((acc, val) => acc.concat[val],[])
         return {
             goodComments,
             badComments,

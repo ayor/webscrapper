@@ -4,6 +4,8 @@
         "CAREER_BLISS_URI": "https://www.careerbliss.com/search",
         "AUTH_TOKEN":"3d9603d1557b2e05cbb99a67b60cdd437af7d9ae",
         "URL": "https://wextractor.com/api/v1/reviews/indeed",
-        "REDIS_URL": "redis://127.0.0.1:6379"
+        "REDIS_URL": "redis://127.0.0.1:6379",
+        "GLASSDOOR_EMAIL":"lou@bestpracticeinstitute.org",
+        "GLASSDOOR_PASS":"4MaryPoppins1*1"
     }
 }
