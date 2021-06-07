@@ -56,10 +56,10 @@ module.exports = {
 
                         let year = employeeData[employeeData.length - 1]
                             .split(',')[1];
-                        reviews.push({ id, title, employee, comment, scrapper: "indeed.com" });
+                        reviews.push({ id, title,year, employee, comment, scrapper: "indeed.com" });
                     });
                 }
-                // reviews.sort((a, b) => b.year - a.year);
+                reviews.sort((a, b) => b.year - a.year);
                 return { reviews, numberReviews };
             }
             return { reviews: [], numberReviews: null }
