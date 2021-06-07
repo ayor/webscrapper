@@ -112,6 +112,8 @@ const BadComments = props => {
                 pageId={badPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
+                prevIsDisabled={__badComments.length < 20}
+                nextIsDisabled={__badComments.length < 20}
             />
         </React.Fragment>
     )
