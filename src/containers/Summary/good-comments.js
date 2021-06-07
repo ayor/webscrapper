@@ -38,7 +38,7 @@ const GoodComments = props => {
         if (goodPageId === 1) {
             return;
         }
-        let newPage = goodPageId - 1 ;
+        let newPage = goodPageId - 1;
 
         const response = await GET_CONTENT(newPage, companyName);
         if (response) {
@@ -80,7 +80,7 @@ const GoodComments = props => {
                             <span className="fa fa-user-circle fa-2x text-dark mr-2"></span>
                         </div>
                         <div>
-                        <small className="text-muted">{comment.employee} </small>
+                            <small className="text-muted">{comment.employee} </small>
                             <small className="text-muted ml-2 ">from - ({comment.scrapper})</small>
                             {/* <small className="text-muted ml-2 ">from - (indeed.com)</small> */}
                             <p className="border-bottom border-semi-info p-1 ">
@@ -98,7 +98,7 @@ const GoodComments = props => {
         <React.Fragment>
             <div className={"text-muted " + SummaryClass.Comments}>
                 <h3 className="h3 text-semi-info text-center my-1"> {goodPercent}% employees <Emoji emojiClass="mr-2 " symbol="❤️" label="shcoked" /> <span className="text-danger font-weight-bold text-uppercase">{companyName}</span></h3>
-                <p className={"text-dark ml-5 p-3 bg-warning h4 "+SummaryClass.totalReviews}>Total Reviews: {props.totalReviews}</p>
+                <p className={"text-dark ml-5 p-3 bg-warning h4 " + SummaryClass.totalReviews}>Total Reviews: {props.totalReviews}</p>
 
                 <div className="comments mt-3">
 
@@ -108,11 +108,13 @@ const GoodComments = props => {
 
                 </div>
             </div>
-            (<Pagination
+            {comments.length <= 0 || props.isSearching ? null : <Pagination
                 pageId={goodPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
-            />)
+                prevIsDisabled={__goodComments.length < 20}
+                nextIsDisabled={__goodComments.length < 20}
+            />}
         </React.Fragment>
     )
 }
