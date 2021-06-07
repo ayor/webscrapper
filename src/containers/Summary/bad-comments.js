@@ -67,7 +67,7 @@ const BadComments = props => {
             className="h3 text-center text-muted my-5 p-5">
             Ooops looks like nothing has been said so far..
         <Emoji emojiClass="mr-2 " symbol="🧐" label="shocked" />. Please try again..</p>
-        <a href='/' className="btn btn-semi-info">try again..</a>
+        <a href='/' className="btn btn-semi-info">Go to home</a>
     </div>)
 
     if (comments.length > 0) {
@@ -108,12 +108,11 @@ const BadComments = props => {
 
                 </div>
             </div>
-            {props.isSearching || comments.length <= 0 ? null :  <Pagination
+            {props.isSearching ? null :  <Pagination
                 pageId={badPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
-                prevIsDisabled={__badComments.length < 20}
-                nextIsDisabled={__badComments.length < 20}
+              
             />}
         </React.Fragment>
     )

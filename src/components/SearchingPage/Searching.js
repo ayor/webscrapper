@@ -18,16 +18,13 @@ const messages = [
 ]
 
 
-const Searching = props => {
+const Searching = (props) => {
     const { companyName } = useSelector(state => state);
     const [errorMessage, setErrorMessage] = useState('');
     const [searchMessage, setSearchMessage] = useState(messages[0]);
     const [messageIndex, setMessageIndex] = useState(0);
 
     const dispatch = useDispatch();
-
-  
-
     const changeMessages = () => {
 
         if (messageIndex < messages.length) {
@@ -48,45 +45,36 @@ const Searching = props => {
 
     useEffect(() => {
         let mounted = true;
-        const fetchComments = async () => {
-            try {
-                const response = await axiosInstance({
-    
-                    method: "POST",
-                    data: {
-                        company_name: companyName
-                    }
-                })
-                return response.data;
-            } catch (error) {
-                throw error;
-            }
-        };
+        const fetchComments = () => {
+            axiosInstance({
 
-        fetchComments().then(response => {
-            if (mounted) {
-                dispatch(COMMENT(response));
-                props.history.push('/result');
-            }
-        })
-            .catch(error => {
+                method: "POST",
+                data: {
+                    company_name: companyName
+                }
+            }).then(response => {
+                if (mounted) {
+                    dispatch(COMMENT(response.data));
+                    props.history.push('/result');
+                }
+            }).catch(error => {
                 if (error.status === 503) {
                     setErrorMessage(`we have noticed a connection problem, kindly check your connection and try again later. 
-                `);
-
-
-                } else {
+            `);} else {
                     setErrorMessage(`An error occurred, kindly try again later. 
-    `);
-
+`);
 
                 }
             });
+           
 
+        }
+
+        fetchComments();
 
         return () => { mounted = false; };
 
-    },[companyName,props, dispatch])
+    }, [])
 
     return (
         <React.Fragment>
