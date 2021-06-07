@@ -108,13 +108,13 @@ const BadComments = props => {
 
                 </div>
             </div>
-            <Pagination
+            {comments.length <= 0 ? null :  <Pagination
                 pageId={badPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
                 prevIsDisabled={__badComments.length < 20}
                 nextIsDisabled={__badComments.length < 20}
-            />
+            />}
         </React.Fragment>
     )
 }
