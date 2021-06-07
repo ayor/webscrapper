@@ -35,9 +35,9 @@ module.exports = {
                 __numberReviews = other === "" ? totalReviews * 1000 : totalReviews;
                 const reviews = [];
                 const percentage = 0.01;
-                const percentile = __numberReviews >= 500 ? percentage * __numberReviews : 200;
-
-                const numLinks = Math.floor(percentile / 20);
+                const percentile = numberReviews >= 1000 ? percentage * numberReviews : numberReviews;
+                const divisor = percentile >= 500 ? 100 : 20;
+                const numLinks = Math.floor(percentile / divisor);
 
                 for (let index = 0; index <= numLinks; index++) {
                     await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?fcountry=ALL&start=${20 * index}`);
@@ -56,7 +56,7 @@ module.exports = {
 
                         let year = employeeData[employeeData.length - 1]
                             .split(',')[1];
-                        reviews.push({ id, title,year, employee, comment, scrapper: "indeed.com" });
+                        reviews.push({ id, title, year, employee, comment, scrapper: "indeed.com" });
                     });
                 }
                 reviews.sort((a, b) => b.year - a.year);
