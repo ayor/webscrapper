@@ -1,4 +1,5 @@
 export const SET_ERROR_MESSAGE = 'SET_ERROR_MESSAGE';
 export const SET_COMPANY_NAME = 'SET_COMPANY_NAME';
 export const SET_COMMENTS = 'SET_COMMENTS';
+export const SET_PAGE_ID = 'SET_PAGE_ID';
 export const HAS_ERROR_STATUS = 'HAS_ERROR_STATUS';

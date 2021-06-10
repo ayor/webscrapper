@@ -1,30 +1,42 @@
-import { SET_COMPANY_NAME, SET_ERROR_MESSAGE, SET_COMMENTS, HAS_ERROR_STATUS} from './actionTypes'
+import { SET_COMPANY_NAME, SET_PAGE_ID, SET_ERROR_MESSAGE, SET_COMMENTS, HAS_ERROR_STATUS } from './actionTypes'
 
 
 export const ERROR_MESSAGE = (err) => {
-    return{
+    return {
         type: SET_ERROR_MESSAGE,
-        payload: err 
+        payload: err
     }
 };
 
 export const COMPANY_NAME = (companyName) => {
-    return{
+    return {
         type: SET_COMPANY_NAME,
         payload: companyName
     }
 }
 export const COMMENT = (response) => {
-    return{
+    return {
         type: SET_COMMENTS,
         payload: response
     }
 }
+export const SET_BADPAGE = (badPageId) => {
+    return {
+        type: SET_PAGE_ID,
+        payload: badPageId
+    }
+}
+export const SET_GOODPAGE = (goodPageId) => {
+    return {
+        type: SET_PAGE_ID,
+        payload: goodPageId
+    }
+}
 
 export const HAS_ERROR = (errorMessage) => {
-    return{
+    return {
         type: HAS_ERROR_STATUS,
-        payload: {hasError:true, errorMessage}
+        payload: { hasError: true, errorMessage }
     }
 }
 

@@ -5,6 +5,8 @@ import SummaryClass from './Summary.module.css'
 import Pagination from "../../components/Pagination/Pagination";
 import { axiosInstance } from "../../axios-instance";
 import { COMMENT } from "../../redux/actions";
+import Loading from '../../components/Loading/Loading'; 
+import Spinner from "../../components/Spinner/Spinner";
 
 const GET_CONTENT = async (newPage, companyName) => {
     try {
@@ -31,7 +33,11 @@ const BadComments = props => {
 
     useEffect(() => {
         setComments(badComments);
-    }, [badComments])
+
+        if(comments.length < 1 ){
+            props.searchForMore(); 
+        }
+    }, [badComments, comments.length, props])
 
 
     const handlePrevBtn = async () => {
@@ -65,9 +71,9 @@ const BadComments = props => {
     let __badComments = (<div className="vh-75 text-center">
         <p
             className="h3 text-center text-muted my-5 p-5">
-            Ooops looks like nothing has been said so far..
-        <Emoji emojiClass="mr-2 " symbol="🧐" label="shocked" />. Please try again..</p>
-        <a href='/' className="btn btn-semi-info">Go to home</a>
+            Ooops looks like nothing bad has been said so far, searching the web for more reviews..
+        <Emoji emojiClass="mr-2 " symbol="🧐" label="shcoked" /></p>
+        <Loading/>
     </div>)
 
     if (comments.length > 0) {
@@ -85,9 +91,9 @@ const BadComments = props => {
                             <small className="text-muted ml-2 ">from - ({comment.scrapper})</small>
                             {/* <small className="text-muted ml-2 ">from - (indeed.com)</small> */}
                             <p className="border-bottom border-semi-info p-1 ">
-                                {comment.comment}</p>
+                                {comment.comment}
+                            </p>
                         </div>
-
                     </div>
 
                 </li>));
@@ -98,8 +104,12 @@ const BadComments = props => {
     return (
         <React.Fragment>
             <div className={"text-muted " + SummaryClass.Comments}>
-                <h3 className="h3 text-semi-info text-center my-1"> {badPercent}% <Emoji emojiClass="mr-2 " symbol="😠" label="not-impressed" /> think you can do better <span className="text-danger font-weight-bold text-uppercase">{companyName}</span></h3>
-                <p className={"text-dark ml-5 p-3 bg-warning h4 " + SummaryClass.totalReviews}>Total Reviews: {props.totalReviews}</p>
+            <h3 className="h3 text-semi-info text-center my-1"> {props.reviewStatus !== "ACT" ? <Spinner spinnerClass="text-info"/> : badPercent}% employees <Emoji emojiClass="mr-2 " symbol="❤️" label="shcoked" /> <span className="text-danger font-weight-bold text-uppercase">{companyName}</span></h3>
+               {props.reviewStatus !== "ACT" ? ( <div><p 
+               className={"text-dark ml-5 p-3 bg-warning h4 " + SummaryClass.totalReviews}>
+                   Total Reviews: <Spinner /></p> </div>) : (<p 
+               className={"text-dark ml-5 p-3 bg-warning h4 " + SummaryClass.totalReviews}>
+                   Total Reviews: {props.totalReviews}</p>)}
 
                 <div className="comments mt-3">
                     <ul className="list-unstyled">
@@ -108,7 +118,7 @@ const BadComments = props => {
 
                 </div>
             </div>
-            {props.isSearching ? null :  <Pagination
+            {props.isSearching  ? null :  <Pagination
                 pageId={badPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
