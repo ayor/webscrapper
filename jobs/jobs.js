@@ -39,7 +39,7 @@ const scrapeProcess = async ({ data }) => {
             let _updatedGoodCommments = [...data.comments.goodComments, ...goodComments];
 
 
-            client.set(company_name, JSON.stringify({
+            client.setex(company_name,3600, JSON.stringify({
                 company_name,
                 comments: { badComments: _updatedBadCommments, goodComments: _updatedGoodCommments },
                 goodPercent,
