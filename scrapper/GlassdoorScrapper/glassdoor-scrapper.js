@@ -19,32 +19,33 @@ const GET_REVIEWS = async (page, reviews) => {
         }
         return reviews
     } catch (error) {
-        return new Error(error);
+        console.log(error)
     }
 
 }
 
-const GLASSDOOR_SCRAPPER = async (browser, company_name) => {
+const GLASSDOOR_SCRAPPER = async (browser, company_name, pageId) => {
 
     try {
         let review_link = `https://www.glassdoor.com/member/home/companies.htm`
+        let url = new URL(`https://www.glassdoor.com/Search/results.htm?keyword=${company_name}`)
         let page = await browser.newPage();
-           await page.setDefaultTimeout(0);
+        await page.setDefaultTimeout(0);
 
         //set user agent to prevent the site from treating this scrapper as a bot;
         const userAgent = 'Mozilla/5.0 (X11; Linux x86_64)' +
             'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.39 Safari/537.36';
         await page.setUserAgent(userAgent);
         //turns request interceptor on
-        await page.setRequestInterception(true);
-        //if the page makes a  request to a resource type of image or stylesheet then abort that            request
+        // await page.setRequestInterception(true);
+        // //if the page makes a  request to a resource type of image or stylesheet then abort that            request
 
-        page.on('request', request => {
-            if (request.resourceType() === 'image' || request.resourceType() === 'stylesheet')
-                request.abort();
-            else
-                request.continue();
-        });
+        // page.on('request', request => {
+        //     if (request.resourceType() === 'image' || request.resourceType() === 'stylesheet')
+        //         request.abort();
+        //     else
+        //         request.continue();
+        // });
 
         console.log(`Navigating to ${review_link}...`);
         await page.goto(review_link);
@@ -59,34 +60,41 @@ const GLASSDOOR_SCRAPPER = async (browser, company_name) => {
                  `)
         //
         await page.waitForNavigation();
-        await page.goto(`https://www.glassdoor.com/Search/results.htm?keyword=${company_name}`);
+        await page.goto(url.href);
+
         await page.waitForSelector('.company-tile');
         const company_tile = await page.$('.company-tile');
+        if (!company_tile) {
+            return { reviews: [], numberReviews: 0 }
+        }
         await company_tile.click();
         await page.waitForSelector('.eiCell.cell.reviews');
+        let hasReviews = await page.$("#EIProductHeaders > div > a.eiCell.cell.reviews > span.num.eiHeaderLink");
+        if (!hasReviews) {
+            return { reviews: [], numberReviews: 0 }
+        }
+        let numberReviews = await page.$eval("#EIProductHeaders > div > a.eiCell.cell.reviews > span.num.eiHeaderLink", count => count.innerText);
         const reviews_link = await page.$('.eiCell.cell.reviews');
         await reviews_link.click('.eiCell.cell.reviews');
         let nextBtn;
 
         await page.waitForNavigation();
-        let numberReviews = await page.$eval("#EIProductHeaders > div > a.eiCell.cell.reviews.active > span.num.eiHeaderLink", count => count.innerText);
-
         let reviews = []
         const [totalReviews, other] = numberReviews.split("k");
 
-        numberReviews = other === "" ? totalReviews * 1000 : totalReviews;
+        let __numberReviews = other === "" ? totalReviews * 1000 : totalReviews;
         if (numberReviews > 10) {
             nextBtn = await page.$('.nextButton');
         }
 
-        const percentage = 0.05;
-        const percentile = numberReviews >= 1000 ? percentage * numberReviews : numberReviews;
-        const divisor = percentile >= 500 ? 100 : 10;
+        const percentage = 0.5;
+        const percentile = __numberReviews >= 1000 ? percentage * __numberReviews : __numberReviews;
+        const divisor = percentile *0.1
         const numLinks = Math.floor(percentile / divisor);
 
         reviews = await GET_REVIEWS(page, []);
         let __reviews;
-        let updatedReviews = [[reviews]]
+        let updatedReviews = [...reviews]
 
         for (let index = 1; index <= numLinks; index++) {
             await page.waitForSelector('.nextButton.css-sed91k')
@@ -95,12 +103,12 @@ const GLASSDOOR_SCRAPPER = async (browser, company_name) => {
             __reviews = await GET_REVIEWS(page, []);
             updatedReviews.push(__reviews)
         }
-reviews = Array.from(updatedReviews).flat();
-        return { reviews , numberReviews };
+        reviews = Array.from(updatedReviews).flat();
+        return { reviews, numberReviews: __numberReviews > reviews.length ? numberReviews : reviews.lenght.toString() };
 
         // return {reviews : [], numberReviews: null}
     } catch (error) {
-        throw new Error(error)
+        console.log(error)
     }
 }
 
