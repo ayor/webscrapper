@@ -91,7 +91,7 @@ const GLASSDOOR_SCRAPPER = async (browser, company_name, pageId) => {
 
         const percentage = 0.5;
         const percentile = __numberReviews >= 1000 ? percentage * __numberReviews : __numberReviews;
-        const divisor = percentile *0.1
+        const divisor = percentile *0.4
         const numLinks = Math.floor(percentile / divisor);
 
         reviews = await GET_REVIEWS(page, []);
