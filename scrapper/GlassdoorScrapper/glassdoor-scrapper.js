@@ -104,7 +104,7 @@ const GLASSDOOR_SCRAPPER = async (browser, company_name, pageId) => {
             updatedReviews.push(__reviews)
         }
         reviews = Array.from(updatedReviews).flat();
-        return { reviews, numberReviews: __numberReviews > reviews.length ? numberReviews : reviews.lenght.toString() };
+        return { reviews, numberReviews: __numberReviews > reviews.length ? numberReviews.replace("k","K") : reviews.lenght.toString() };
 
         // return {reviews : [], numberReviews: null}
     } catch (error) {

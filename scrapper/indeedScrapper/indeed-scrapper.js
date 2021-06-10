@@ -3,7 +3,7 @@ const indeed_uri = require('../../config/config').INDEED_URI;
 
 
 module.exports = {
-    INDEED_SCRAPPER: async (browser, company_name, isFirstScrape) => {
+    INDEED_SCRAPPER: async (browser, company_name, isFirstScrape, Page) => {
 
         try {
             let review_link = `https://www.indeed.com/cmp/${company_name}/reviews?fcountry=ALL`;
@@ -40,7 +40,7 @@ module.exports = {
 
                 if (isFirstScrape) {
 
-                    await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?fcountry=ALL&start=${20}`);
+                    await page.goto(`https://www.indeed.com/cmp/${company_name}/reviews?fcountry=ALL&start=${20 * Page}`);
                     await page.waitForSelector(".cmp-Review-content");
                     const contents = await page.$$eval("div.cmp-Review-content", reviewcontents => {
 
@@ -86,7 +86,7 @@ module.exports = {
                 }
 
                 reviews.sort((a, b) => b.year - a.year);
-                return { reviews, numberReviews: __numberReviews > reviews.length ? numberReviews : reviews.length.toString() };
+                return { reviews, numberReviews: __numberReviews > reviews.length ? numberReviews.replace("k","K") : reviews.length.toString() };
             }
             return { reviews: [], numberReviews: 0 }
         } catch (error) {

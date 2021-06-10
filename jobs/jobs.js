@@ -25,8 +25,8 @@ const scrapeProcess = async ({ data }) => {
              * add the total number of reviews
              * concat the good and bad reviews
              */
-            let ind_reviews = numberReviews.toString().split("k");
-            let old_reviews = data.numberReviews.split("K");
+            let ind_reviews = numberReviews.toString().split("K");
+            let old_reviews = data.numberReviews.toString().split("K");
 
 
             if (ind_reviews.length > 1 || old_reviews.length > 1) {
@@ -46,6 +46,7 @@ const scrapeProcess = async ({ data }) => {
                 goodPageId: _goodPageId,
                 badPageId: _badPageId,
                 badPercent,
+                reviewStatus: "ACT",
                 numberReviews: __totalReviews || 0,
             }));
         })
