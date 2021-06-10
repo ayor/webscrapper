@@ -74,7 +74,7 @@ const Searching = (props) => {
 
         return () => { mounted = false; };
 
-    }, [])
+    }, [companyName, dispatch,props.history])
 
     return (
         <React.Fragment>
