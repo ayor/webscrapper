@@ -8,13 +8,15 @@ const GET_REVIEWS = async (page, reviews) => {
             reviewContent.forEach(el => {
                 let id = Math.random() * Math.random() * 1000000;
                 let reviewDetail = el.split('\n');
-                reviews.push({
-                    id,
-                    title: reviewDetail[0],
-                    employee: reviewDetail[1],
-                    comment: reviewDetail[8] + " " + reviewDetail[12],
-                    scrapper: "glassdoor.com"
-                });
+                if(reviewDetail[0] || reviewDetail[8]){
+                    reviews.push({
+                        id,
+                        title: reviewDetail[0],
+                        employee: reviewDetail[1],
+                        comment: reviewDetail[8] + " " + reviewDetail[12],
+                        scrapper: "glassdoor.com"
+                    });
+                }
             });
         }
         return reviews
