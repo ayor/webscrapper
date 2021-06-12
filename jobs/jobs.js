@@ -10,47 +10,24 @@ const scrapeProcess = async ({ data }) => {
         let browser = await puppeteerBrowser();
         let { reviews, numberReviews } = await pageScraper.scrapper.glassdoor_scrapper(browser, company_name);
         let response = await pageScraper.scrapper.indeed_scrapper( browser, company_name, false );
-
-        let { goodComments, badComments } = analyzeReviews([...reviews, ...response.reviews], numberReviews);
+        let gld_reviews = numberReviews.toString().split("K")[0];
+        let ind_reviews = response.numberReviews.toString().split("K")[0];
+        numberReviews = +gld_reviews + +ind_reviews;
+        let { goodComments, badComments } = analyzeReviews([...reviews, ...response.reviews], numberReviews); 
 
         let goodPercent = ((goodComments.length / (goodComments.length + badComments.length)) * 100).toFixed(2) || 0;
         let badPercent = (100 - goodPercent).toFixed(2) || 0;
-        client.get(company_name, (err, data) => {
-            let __totalReviews;
-            if (err) {
-                throw new Error(err);
-            }
-            data = JSON.parse(data);
-            /**
-             * add the total number of reviews
-             * concat the good and bad reviews
-             */
-            let ind_reviews = numberReviews.toString().split("K");
-            let old_reviews = data.numberReviews.toString().split("K");
-
-
-            if (ind_reviews.length > 1 || old_reviews.length > 1) {
-                __totalReviews = +ind_reviews[0] + +old_reviews[0] + "K";
-            } else {
-                __totalReviews = +ind_reviews[0] + +old_reviews[0]
-            }
-
-            let _updatedBadCommments = [...data.comments.badComments, ...badComments];
-            let _updatedGoodCommments = [...data.comments.goodComments, ...goodComments];
-
-
-            client.setex(company_name,3600, JSON.stringify({
-                company_name,
-                comments: { badComments: _updatedBadCommments, goodComments: _updatedGoodCommments },
-                goodPercent,
-                goodPageId: _goodPageId,
-                badPageId: _badPageId,
-                badPercent,
-                reviewStatus: "ACT",
-                numberReviews: __totalReviews || 0,
-            }));
-        })
-
+        
+        client.setex(company_name,3600, JSON.stringify({
+            company_name,
+            goodPercent,
+            goodPageId: _goodPageId,
+            badPageId: _badPageId,
+            badPercent,
+            comments: { badComments, goodComments },
+            reviewStatus: "ACT",
+            numberReviews: numberReviews || 0,
+        }));
         // console.log(job.id);
 
     } catch (error) {
@@ -62,3 +39,31 @@ const scrapeProcess = async ({ data }) => {
 
 
 module.exports = scrapeProcess;
+
+
+// client.get(company_name, (err, data) => {
+        //     let __totalReviews;
+        //     if (err) {
+        //         throw new Error(err);
+        //     }
+        //     data = JSON.parse(data);
+        //     /**
+        //      * add the total number of reviews
+        //      * concat the good and bad reviews
+        //      */
+        //     let ind_reviews = numberReviews.toString().split("K");
+        //     let old_reviews = data.numberReviews.toString().split("K");
+
+
+        //     if (ind_reviews.length > 1 || old_reviews.length > 1) {
+        //         __totalReviews = +ind_reviews[0] + +old_reviews[0] + "K";
+        //     } else {
+        //         __totalReviews = +ind_reviews[0] + +old_reviews[0]
+        //     }
+
+        //     let _updatedBadCommments = [...data.comments.badComments, ...badComments];
+        //     let _updatedGoodCommments = [...data.comments.goodComments, ...goodComments];
+
+
+           
+        // })

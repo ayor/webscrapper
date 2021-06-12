@@ -2,8 +2,11 @@
 const setClient = require('../util/setClient');
 const getReviews = require('../util/getReviews');
 const redis = require('redis');
+const puppeteerBrowser = require('../scrapper/browser');
+const analyzeReview = require('../util/analyzeReviews');
+const pageScraper = require('../scrapper/pageScrapper');
 let client = redis.createClient(process.env.REDIS_URL, { no_ready_check: true });
-const NUM_OF_COMMENTS_PER_PAGE = 20;
+const NUM_OF_COMMENTS_PER_PAGE = 10;
 
 const scrapeReviews = async ({ res, company_name, _badPageId, _goodPageId }) => {
 
@@ -16,28 +19,28 @@ const scrapeReviews = async ({ res, company_name, _badPageId, _goodPageId }) => 
         }
         //scrape for comments if data does not exist on the redis cache
         if (!data) {
-            let { goodComments, badComments, numberReviews } = await getReviews({ 
-                company_name, 
-                _badPageId, 
+            let { goodComments, badComments, numberReviews } = await getReviews({
+                company_name,
+                _badPageId,
                 _goodPageId,
                 isFirstScrape: true,
                 Page: 1
-                 });
+            });
 
             let goodPercent = ((goodComments.length / (goodComments.length + badComments.length)) * 100).toFixed(2) || 0;
             let badPercent = (100 - goodPercent).toFixed(2) || 0;
 
             //stores scrapped results/reviews on redis 
-            setClient(company_name, {
-                company_name,
-                comments: { badComments, goodComments },
-                goodPercent,
-                goodPageId: _goodPageId,
-                badPageId: _badPageId,
-                badPercent,
-                reviewStatus: "PEN",
-                numberReviews: numberReviews || "0"
-            });
+            // setClient(company_name, {
+            //     company_name,
+            //     comments: { badComments, goodComments },
+            //     goodPercent,
+            //     goodPageId: _goodPageId,
+            //     badPageId: _badPageId,
+            //     badPercent,
+            //     reviewStatus: "PEN",
+            //     numberReviews: numberReviews || "0"
+            // });
 
             //sends reviews to user 
             res.status(200).json({
@@ -45,36 +48,33 @@ const scrapeReviews = async ({ res, company_name, _badPageId, _goodPageId }) => 
                     goodComments: goodComments.splice(START_INDEX_GD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE),
                     badComments: badComments.splice(START_INDEX_BD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE)
                 },
-                numberReviews: numberReviews || 0,
+                numberReviews: "",
                 goodPageId: _goodPageId,
                 badPageId: _badPageId,
-                goodPercent,
-                badPercent,
+                goodPercent: "",
+                badPercent: "",
                 reviewStatus: "PEN"
             })
         } else {
             data = JSON.parse(data);
-            // let __oldGoodComments = data.comments.goodComments;
-            // let __oldBadComments = data.comments.badComments;
 
-            setClient(company_name, {
-                ...data,
-                goodPageId: _goodPageId,
-                badPageId: _badPageId,
+            let _goodComments = data.comments.goodComments.splice(START_INDEX_GD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE);
+            let _badComments = data.comments.badComments.splice(START_INDEX_BD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE);
 
-            });
+            // if comments/reviews have not been populated, get the next reviews;
+            //if number of reviews is not greater than 20 * page, check glassdoor;
+
+
+
             res.status(200).json({
                 ...data,
                 goodPageId: _goodPageId,
                 badPageId: _badPageId,
                 comments: {
-                    goodComments: data.comments.goodComments.splice(START_INDEX_GD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE),
-                    badComments: data.comments.badComments.splice(START_INDEX_BD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE)
+                    goodComments: _goodComments,
+                    badComments: _badComments
                 }
-              
             });
-
-
         }
     })
 
@@ -113,16 +113,13 @@ exports.getComments = async (req, res, next) => {
 }
 
 
-exports.getMore = async (req,res, next)=>{
+exports.getMore = async (req, res, next) => {
     try {
         const company_name = req.body.company_name.trim();
         // const pageId = +req.query.pageId;
         let _goodPageId = +req.query.goodPageId;
         let _badPageId = +req.query.badPageId;
 
-        const START_INDEX_GD_COMMENTS = (NUM_OF_COMMENTS_PER_PAGE * +_goodPageId) - NUM_OF_COMMENTS_PER_PAGE;
-        const START_INDEX_BD_COMMENTS = (NUM_OF_COMMENTS_PER_PAGE * +_badPageId) - NUM_OF_COMMENTS_PER_PAGE;
-       
         //check if expected params are sent
         if (!company_name) {
             const err = new Error('Kindly enter a company name');
@@ -138,34 +135,50 @@ exports.getMore = async (req,res, next)=>{
             _badPageId = 1;
         }
 
-        let {
-            goodComments,
-            badComments,
-            numberReviews
-        } = await getReviews({company_name, isFirstScrape: false, Page: _badPageId  > _goodPageId ? _badPageId : _goodPageId});
-        
-        let goodPercent = ((goodComments.length / (goodComments.length + badComments.length)) * 100).toFixed(2) || 0;
-        let badPercent = (100 - goodPercent).toFixed(2) || 0;
-
-
-        res.status(200).json({
-            comments: {
-                goodComments: goodComments.splice(START_INDEX_GD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE),
-                badComments: badComments.splice(START_INDEX_BD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE)
-            },
-            numberReviews: numberReviews || 0,
-            goodPageId: _goodPageId,
-            badPageId: _badPageId,
-            goodPercent,
-            badPercent,
-            reviewStatus: "PEN"
-        }); 
+        await scrapeReviews({ res, company_name, _badPageId, _goodPageId });
     } catch (error) {
-         // console.log("Could not resolve the browser instance => ", error);
-         if (!error.status) {
+        // console.log("Could not resolve the browser instance => ", error);
+        if (!error.status) {
             error.status = 500;
             error.message = "Could not resolve the browser instance";
         }
         next(error);
     }
+}
+exports.getReviews = async (req, res, next) => {
+    let company_name = req.query.company_name;
+
+    const headers = {
+        'Content-Type': 'text/event-stream',
+        'Connection': 'keep-alive',
+        'Cache-Control': 'no-cache'
+    };
+
+    client.get(company_name, (err, data) => {
+        if (err) {
+            throw err;
+        }
+        if (data) {
+            let {
+                numberReviews,
+                goodPercent,
+                badPercent
+            } = JSON.parse(data)
+            headers.Connection = "";
+            res.writeHead(200, headers);
+
+            res.write(`data: ${JSON.stringify({
+                numberReviews,
+                goodPercent,
+                badPercent
+            })}\n\n`);
+            res.end();
+        } else {
+            data = {}
+            res.write(`data: ${JSON.stringify(data)} \n\n`);
+
+            res.end();
+        }
+    })
+
 }
