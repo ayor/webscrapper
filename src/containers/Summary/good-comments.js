@@ -104,7 +104,7 @@ const GoodComments = props => {
 
     let __goodComments = (<Noreviews commentType={"good"}/>)
 
-    if (comments.length > 10) {
+    if (comments.length > 0) {
 
         __goodComments = comments
             .map((comment) => (
