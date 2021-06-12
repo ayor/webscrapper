@@ -9,11 +9,13 @@ const scrapeProcess = async ({ data }) => {
         let { company_name, _badPageId, _goodPageId } = data;
         let browser = await puppeteerBrowser();
         let { reviews, numberReviews } = await pageScraper.scrapper.glassdoor_scrapper(browser, company_name);
+
         let response = await pageScraper.scrapper.indeed_scrapper( browser, company_name, false );
         let gld_reviews = numberReviews.toString().split("K")[0];
         let ind_reviews = response.numberReviews.toString().split("K")[0];
         numberReviews = +gld_reviews + +ind_reviews;
         let { goodComments, badComments } = analyzeReviews([...reviews, ...response.reviews], numberReviews); 
+
 
         let goodPercent = ((goodComments.length / (goodComments.length + badComments.length)) * 100).toFixed(2) || 0;
         let badPercent = (100 - goodPercent).toFixed(2) || 0;
