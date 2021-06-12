@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Emoji from "../../components/Emoji/Emoji";
 import SummaryClass from './Summary.module.css'
 import Pagination from "../../components/Pagination/Pagination";
 import { axiosInstance } from "../../axios-instance";
 import { COMMENT } from "../../redux/actions";
-import Loading from '../../components/Loading/Loading'; 
-import Spinner from "../../components/Spinner/Spinner";
+import Noreviews from '../../components/Noreviews/Noreviews';
+import Review from "../../components/Review/Review";
+import TotalReviews from "../../components/TotalReviews/TotalReviews";
+
 
 const GET_CONTENT = async (newPage, companyName) => {
     try {
@@ -27,17 +28,29 @@ const GET_CONTENT = async (newPage, companyName) => {
 }
 
 const BadComments = props => {
-    let { badPageId, companyName, badComments, badPercent } = useSelector(state => state);
+    let { badPageId, companyName, badComments } = useSelector(state => state);
     const [comments, setComments] = useState(badComments);
     const dispatch = useDispatch();
 
     useEffect(() => {
+        let sse = new EventSource(`${process.env.REACT_APP_BASE_URL+"/more?company_name="+companyName+"&goodPageId="+badPageId}`);
+        const workOnData = (data) => {
+            
+            if(!data){
+                return;
+            }
+            let {comments} = data; 
+            setComments(comments.badComments);
+        }
+    
+        sse.onmessage = (ev) => workOnData(JSON.parse(ev.data))
+
         setComments(badComments);
 
-        if(comments.length < 1 ){
-            props.searchForMore(); 
+        return () => {
+        sse.close();
         }
-    }, [badComments, comments.length, props])
+    }, [companyName, badComments, badPageId])
 
 
     const handlePrevBtn = async () => {
@@ -61,20 +74,16 @@ const BadComments = props => {
         let newPage = badPageId + 1;
         const response = await GET_CONTENT(newPage, companyName);
 
-        if (response) {
+        if (response.comments.badComments.length) {
             props.setSearching(false);
             setComments(response.comments);
             dispatch(COMMENT(response));
+        } else {
+
         }
 
     }
-    let __badComments = (<div className="vh-75 text-center">
-        <p
-            className="h3 text-center text-muted my-5 p-5">
-            Ooops looks like nothing bad has been said so far, searching the web for more reviews..
-        <Emoji emojiClass="mr-2 " symbol="🧐" label="shcoked" /></p>
-        <Loading/>
-    </div>)
+    let __badComments = (<Noreviews commentType={"bad"}/>)
 
     if (comments.length > 0) {
 
@@ -82,20 +91,7 @@ const BadComments = props => {
             .map(comment => (
                 <li className="p-2"
                     key={comment.id}>
-                    <div className="d-flex">
-                        <div>
-                            <span className="fa fa-user-circle fa-2x text-dark mr-2"></span>
-                        </div>
-                        <div>
-                            <small className="text-muted">{comment.employee} </small>
-                            <small className="text-muted ml-2 ">from - ({comment.scrapper})</small>
-                            {/* <small className="text-muted ml-2 ">from - (indeed.com)</small> */}
-                            <p className="border-bottom border-semi-info p-1 ">
-                                {comment.comment}
-                            </p>
-                        </div>
-                    </div>
-
+                    <Review comment={comment} />
                 </li>));
     }
 
@@ -104,12 +100,13 @@ const BadComments = props => {
     return (
         <React.Fragment>
             <div className={"text-muted " + SummaryClass.Comments}>
-            <h3 className="h3 text-semi-info text-center my-1"> {props.reviewStatus !== "ACT" ? <Spinner spinnerClass="text-info"/> : badPercent}% employees <Emoji emojiClass="mr-2 " symbol="❤️" label="shcoked" /> <span className="text-danger font-weight-bold text-uppercase">{companyName}</span></h3>
-               {props.reviewStatus !== "ACT" ? ( <div><p 
-               className={"text-dark ml-5 p-3 bg-warning h4 " + SummaryClass.totalReviews}>
-                   Total Reviews: <Spinner /></p> </div>) : (<p 
-               className={"text-dark ml-5 p-3 bg-warning h4 " + SummaryClass.totalReviews}>
-                   Total Reviews: {props.totalReviews}</p>)}
+            <TotalReviews 
+                reviewStatus={props.reviewStatus} 
+                companyName={companyName}
+                totalReviews={props.totalReviews} 
+                symbol={"😠" }
+                label={"angry"} 
+                percentType={"badPercent"}/>
 
                 <div className="comments mt-3">
                     <ul className="list-unstyled">
@@ -118,12 +115,13 @@ const BadComments = props => {
 
                 </div>
             </div>
-            {props.isSearching  ? null :  <Pagination
+            {/* {comments.length < 10 ? <MoreButton clicked ={searchForMore.bind(this, goodPageId+1)}/> : null } */}
+            {props.isSearching ? null : (<Pagination
                 pageId={badPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
-              
-            />}
+
+            />)}
         </React.Fragment>
     )
 }
