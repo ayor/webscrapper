@@ -115,11 +115,12 @@ exports.getComments = async (req, res, next) => {
 
 exports.getMore = async (req, res, next) => {
     try {
-        const company_name = req.body.company_name.trim();
-        // const pageId = +req.query.pageId;
-        let _goodPageId = +req.query.goodPageId;
-        let _badPageId = +req.query.badPageId;
-
+        let { company_name, goodPageId, badPageId } = req.query
+        const headers = {
+            'Content-Type': 'text/event-stream',
+            'Connection': 'keep-alive',
+            'Cache-Control': 'no-cache'
+        };
         //check if expected params are sent
         if (!company_name) {
             const err = new Error('Kindly enter a company name');
@@ -127,20 +128,47 @@ exports.getMore = async (req, res, next) => {
             throw err;
         }
 
-        if (!_goodPageId) {
-            _goodPageId = 1;
+        if (!goodPageId) {
+            goodPageId = 1;
         }
 
-        if (!_badPageId) {
-            _badPageId = 1;
+        if (!badPageId) {
+            badPageId = 1;
         }
 
-        await scrapeReviews({ res, company_name, _badPageId, _goodPageId });
+        client.get(company_name, (err, data) => {
+            if (err) {
+                throw err;
+            }
+            if (data) {
+                let { comments: { goodComments, badComments } } = JSON.parse(data);
+
+                const START_INDEX_GD_COMMENTS = (NUM_OF_COMMENTS_PER_PAGE * +goodPageId) - NUM_OF_COMMENTS_PER_PAGE;
+                const START_INDEX_BD_COMMENTS = (NUM_OF_COMMENTS_PER_PAGE * +badPageId) - NUM_OF_COMMENTS_PER_PAGE;
+
+                res.writeHead(200, headers);
+
+                res.write(`data: ${JSON.stringify({
+                    comments: {
+                        goodComments: goodComments.splice(START_INDEX_GD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE),
+                        badComments: badComments.splice(START_INDEX_BD_COMMENTS, NUM_OF_COMMENTS_PER_PAGE)
+                    }
+                })}\n\n`);
+                res.end();
+            } else {
+                res.writeHead(200, headers);
+                res.write(`data: ${JSON.stringify(data)} \n\n`);
+
+                res.end();
+            }
+        })
+
+
     } catch (error) {
         // console.log("Could not resolve the browser instance => ", error);
         if (!error.status) {
             error.status = 500;
-            error.message = "Could not resolve the browser instance";
+            
         }
         next(error);
     }
@@ -164,7 +192,7 @@ exports.getReviews = async (req, res, next) => {
                 goodPercent,
                 badPercent
             } = JSON.parse(data)
-            headers.Connection = "";
+
             res.writeHead(200, headers);
 
             res.write(`data: ${JSON.stringify({
@@ -174,7 +202,12 @@ exports.getReviews = async (req, res, next) => {
             })}\n\n`);
             res.end();
         } else {
-            data = {}
+            data = {
+                numberReviews: "",
+                goodPercent: "",
+                badPercent: ""
+            }
+            res.writeHead(200, headers);
             res.write(`data: ${JSON.stringify(data)} \n\n`);
 
             res.end();

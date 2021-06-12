@@ -11,14 +11,18 @@ const scrapeProcess = async ({ data }) => {
         let { reviews, numberReviews } = await pageScraper.scrapper.glassdoor_scrapper(browser, company_name);
 
         let response = await pageScraper.scrapper.indeed_scrapper( browser, company_name, false );
-        let gld_reviews = numberReviews.toString().split("K")[0];
-        let ind_reviews = response.numberReviews.toString().split("K")[0];
-        numberReviews = +gld_reviews + +ind_reviews;
+        let gld_reviews = numberReviews.toString().split("K");
+        let ind_reviews = response.numberReviews.toString().split("K");
+        numberReviews = +gld_reviews[0] + +ind_reviews[0];
         let { goodComments, badComments } = analyzeReviews([...reviews, ...response.reviews], numberReviews); 
 
 
         let goodPercent = ((goodComments.length / (goodComments.length + badComments.length)) * 100).toFixed(2) || 0;
         let badPercent = (100 - goodPercent).toFixed(2) || 0;
+
+        if(gld_reviews.length > 1 || ind_reviews.length > 1){
+            numberReviews += "K" 
+        }
         
         client.setex(company_name,3600, JSON.stringify({
             company_name,
