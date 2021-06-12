@@ -39,37 +39,7 @@ const scrapeProcess = async ({ data }) => {
     } catch (error) {
         console.log(error)
     }
-
-
 }
-
-
 module.exports = scrapeProcess;
 
 
-// client.get(company_name, (err, data) => {
-        //     let __totalReviews;
-        //     if (err) {
-        //         throw new Error(err);
-        //     }
-        //     data = JSON.parse(data);
-        //     /**
-        //      * add the total number of reviews
-        //      * concat the good and bad reviews
-        //      */
-        //     let ind_reviews = numberReviews.toString().split("K");
-        //     let old_reviews = data.numberReviews.toString().split("K");
-
-
-        //     if (ind_reviews.length > 1 || old_reviews.length > 1) {
-        //         __totalReviews = +ind_reviews[0] + +old_reviews[0] + "K";
-        //     } else {
-        //         __totalReviews = +ind_reviews[0] + +old_reviews[0]
-        //     }
-
-        //     let _updatedBadCommments = [...data.comments.badComments, ...badComments];
-        //     let _updatedGoodCommments = [...data.comments.goodComments, ...goodComments];
-
-
-           
-        // })
