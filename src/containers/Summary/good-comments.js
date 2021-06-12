@@ -33,7 +33,7 @@ const GoodComments = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        let sse = new EventSource(`${process.env.REACT_APP_BASE_URL+"/more?company_name="+companyName+"&goodPageId="+goodPageId}`);
+        let sse = new EventSource(`${process.env.REACT_APP_BASE_URL_PROD+"/more?company_name="+companyName+"&goodPageId="+goodPageId}`);
         const workOnData = (data) => {
             
             if(!data){
