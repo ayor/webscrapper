@@ -3,10 +3,7 @@
     transition: all .7s;
 }
 
-.totalReviews{
-    width: 25%;
-    margin: 1em;
-}
+
 
 @media (max-width: 500px) {
     .totalReviews{

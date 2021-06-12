@@ -1,16 +1,16 @@
-import {SET_COMPANY_NAME, SET_PAGE_ID, SET_ERROR_MESSAGE, HAS_ERROR_STATUS, SET_COMMENTS} from './actionTypes'
+import { SET_COMPANY_NAME, SET_REVIEWS_PERCENT, SET_PAGE_ID, SET_ERROR_MESSAGE, HAS_ERROR_STATUS, SET_COMMENTS } from './actionTypes'
 
 const initialState = {
     companyName: '',
     errorMessage: '',
-    goodComments:[],
-    badComments:[],
+    goodComments: [],
+    badComments: [],
     goodPageId: 1,
     badPageId: 1,
-    goodPercent:'',
+    goodPercent: '',
     badPercent: '',
-    hasError:false,
-    totalReviews:'',
+    hasError: false,
+    totalReviews: '',
     reviewStatus: ""
 }
 
@@ -22,19 +22,25 @@ const reducer = (state = initialState, action) => {
         case SET_COMPANY_NAME:
             return { ...state, companyName: action.payload }
         case SET_COMMENTS:
-            return { ...state, 
-                goodComments: action.payload.comments.goodComments, 
+            return {
+                ...state,
+                goodComments: action.payload.comments.goodComments,
                 badComments: action.payload.comments.badComments,
-                totalReviews: action.payload.numberReviews ,
+                totalReviews: action.payload.numberReviews,
                 goodPageId: action.payload.goodPageId,
                 goodPercent: action.payload.goodPercent,
                 badPageId: action.payload.badPageId,
                 badPercent: action.payload.badPercent,
                 reviewStatus: action.payload.reviewStatus
-                
+
             }
         case SET_PAGE_ID:
-            return{
+            return {
+                ...state,
+                ...action.payload
+            }
+        case SET_REVIEWS_PERCENT:
+            return {
                 ...state,
                 ...action.payload
             }

@@ -17,8 +17,8 @@ const Welcome = props => {
                 <NavBar />
                 <Switch>
                     <Route path='/' exact render={() => <HomePage {...props} />} />
-                    <Route path='/search' exact render={() => companyName === "" ? <Redirect path='/' /> : <Searching {...props} />} />
-                    <Route path="/result" exact render={() => companyName === "" ? <Redirect path='/' /> : <Summary />} />
+                    <Route path='/search' exact render={() => companyName === "" ? <Redirect to='/' /> : <Searching {...props} />} />
+                    <Route path="/result" exact render={() => companyName === "" ? <Redirect to='/' /> : <Summary />} />
                     <Redirect to="/" />
                 </Switch>
             </Router>
