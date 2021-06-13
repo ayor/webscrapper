@@ -11,8 +11,11 @@ const TotalReviews = props => {
 
 
     useEffect(() => {
-        let sse = new EventSource(`${"https://mlw-api.herokuapp.com/scrapper-api/v1/comments/totalreviews?company_name="+companyName}`);
-        const workOnData = ({ numberReviews, goodPercent, badPercent }) => {
+        //let sse = new EventSource(`${"https://mlw-api.herokuapp.com/scrapper-api/v1/comments/totalreviews?company_name="+companyName}`);
+              //let sse = new EventSource(`${"https://mlw-api.netlify.app/scrapper-api/v1/comments/totalreviews?company_name="+companyName}`);
+
+        
+ const workOnData = ({ numberReviews, goodPercent, badPercent }) => {
 
             if (numberReviews) {
                 setReviews(numberReviews);
