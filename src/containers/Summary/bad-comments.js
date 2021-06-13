@@ -44,9 +44,6 @@ const BadComments = props => {
         }
     
         sse.onmessage = (ev) => workOnData(JSON.parse(ev.data))
-
-        setComments(badComments);
-
         return () => {
         sse.close();
         }

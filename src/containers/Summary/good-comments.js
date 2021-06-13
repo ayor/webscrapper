@@ -41,17 +41,14 @@ const GoodComments = props => {
             }
             let {comments} = data; 
             setComments(comments.goodComments);
+            sse.close();
         }
     
         sse.onmessage = (ev) => workOnData(JSON.parse(ev.data))
-
-        setComments(goodComments);
-
         return () => {
         sse.close();
         }
     }, [companyName, goodComments, goodPageId])
-
     const handlePrevBtn = async () => {
         props.setSearching(true);
         if (goodPageId === 1) {
