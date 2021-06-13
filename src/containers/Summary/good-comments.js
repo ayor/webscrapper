@@ -33,8 +33,8 @@ const GoodComments = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-       // let sse = new EventSource(`${"https://mlw-api.herokuapp.com/scrapper-api/v1/comments/more?company_name="+companyName+"&goodPageId="+goodPageId}`);
-        let sse = new EventSource(`${" https://mlw-api.netlify.app/scrapper-api/v1/comments/more?company_name="+companyName+"&goodPageId="+goodPageId}`);
+        let sse = new EventSource(`${"https://mlw-api.herokuapp.com/scrapper-api/v1/comments/more?company_name="+companyName+"&goodPageId="+goodPageId}`);
+       // let sse = new EventSource(`${" https://mlw-api.netlify.app/scrapper-api/v1/comments/more?company_name="+companyName+"&goodPageId="+goodPageId}`);
 
        
         const workOnData = (data) => {
