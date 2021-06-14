@@ -12,11 +12,13 @@ const TotalReviews = props => {
 
 
     useEffect(() => {
+
         let sse = new EventSource(`${process.env.REACT_APP_BASE_URL+"/totalreviews?company_name="+companyName}`);
         
         const workOnData = ({ numberReviews, goodPercent, badPercent, reviewStatus }) => {
             
             if (reviewStatus) {
+
                 setReviews(numberReviews);
                 setPercent(badPercent);
                 setGdPercent(goodPercent);
