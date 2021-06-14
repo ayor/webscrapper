@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SummaryClass from './Summary.module.css'
 import Pagination from "../../components/Pagination/Pagination";
 import { axiosInstance } from "../../axios-instance";
-import { COMMENT } from "../../redux/actions";
+import { COMMENT, REVIEW_STATUS } from "../../redux/actions";
 import Noreviews from '../../components/Noreviews/Noreviews';
 import Review from "../../components/Review/Review";
 import TotalReviews from "../../components/TotalReviews/TotalReviews";
@@ -33,21 +33,22 @@ const BadComments = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        let sse = new EventSource(`${"https://mlw-api.herokuapp.com/scrapper-api/v1/comments/more?company_name="+companyName+"&goodPageId="+badPageId}`);
+        let sse = new EventSource(`${process.env.REACT_APP_BASE_URL+"/more?company_name="+companyName+"&goodPageId="+badPageId}`);
         const workOnData = (data) => {
             
             if(!data){
                 return;
             }
-            let {comments} = data; 
+            let {comments, reviewStatus} = data; 
             setComments(comments.badComments);
+            dispatch(REVIEW_STATUS(reviewStatus))
         }
     
         sse.onmessage = (ev) => workOnData(JSON.parse(ev.data))
         return () => {
         sse.close();
         }
-    }, [companyName, badComments, badPageId])
+    }, [companyName, badComments,dispatch, badPageId])
 
 
     const handlePrevBtn = async () => {

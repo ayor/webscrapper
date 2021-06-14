@@ -1,4 +1,4 @@
-import { SET_COMPANY_NAME, SET_REVIEWS_PERCENT,SET_PAGE_ID, SET_ERROR_MESSAGE, SET_COMMENTS, HAS_ERROR_STATUS } from './actionTypes'
+import { SET_COMPANY_NAME,SET_REVIEW_STATUS, SET_REVIEWS_PERCENT,SET_PAGE_ID, SET_ERROR_MESSAGE, SET_COMMENTS, HAS_ERROR_STATUS } from './actionTypes'
 
 
 export const ERROR_MESSAGE = (err) => {
@@ -12,6 +12,12 @@ export const COMPANY_NAME = (companyName) => {
     return {
         type: SET_COMPANY_NAME,
         payload: companyName
+    }
+}
+export const REVIEW_STATUS = (status) => {
+    return {
+        type: SET_REVIEW_STATUS,
+        payload: status
     }
 }
 export const REVIEWS_PERCENT = (data) => {

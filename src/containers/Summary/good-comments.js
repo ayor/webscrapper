@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SummaryClass from './Summary.module.css'
 import Pagination from "../../components/Pagination/Pagination";
 import { axiosInstance } from "../../axios-instance";
-import { COMMENT, SET_GOODPAGE } from "../../redux/actions";
+import { COMMENT, SET_GOODPAGE,REVIEW_STATUS } from "../../redux/actions";
 import Noreviews from '../../components/Noreviews/Noreviews';
 import Review from "../../components/Review/Review";
 import TotalReviews from "../../components/TotalReviews/TotalReviews";
@@ -33,14 +33,15 @@ const GoodComments = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        let sse = new EventSource(`${"https://mlw-api.herokuapp.com/scrapper-api/v1/comments/more?company_name="+companyName+"&goodPageId="+goodPageId}`);
+        let sse = new EventSource(`${process.env.REACT_APP_BASE_URL+"/more?company_name="+companyName+"&goodPageId="+goodPageId}`);
         const workOnData = (data) => {
             
             if(!data){
                 return;
             }
-            let {comments} = data; 
+            let {comments, reviewStatus} = data; 
             setComments(comments.goodComments);
+            dispatch(REVIEW_STATUS(reviewStatus))
             sse.close();
         }
     
@@ -48,7 +49,7 @@ const GoodComments = props => {
         return () => {
         sse.close();
         }
-    }, [companyName, goodComments, goodPageId])
+    }, [companyName, goodComments, dispatch, goodPageId])
     const handlePrevBtn = async () => {
         props.setSearching(true);
         if (goodPageId === 1) {
@@ -60,7 +61,7 @@ const GoodComments = props => {
         const response = await GET_CONTENT(newPage, companyName);
         if (response) {
             props.setSearching(false);
-            setComments(response.comments)
+            setComments(response.comments);
             dispatch(COMMENT(response));
         }
     }

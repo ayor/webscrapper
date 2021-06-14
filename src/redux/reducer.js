@@ -1,4 +1,4 @@
-import { SET_COMPANY_NAME, SET_REVIEWS_PERCENT, SET_PAGE_ID, SET_ERROR_MESSAGE, HAS_ERROR_STATUS, SET_COMMENTS } from './actionTypes'
+import { SET_COMPANY_NAME, SET_REVIEW_STATUS,SET_REVIEWS_PERCENT, SET_PAGE_ID, SET_ERROR_MESSAGE, HAS_ERROR_STATUS, SET_COMMENTS } from './actionTypes'
 
 const initialState = {
     companyName: '',
@@ -40,6 +40,11 @@ const reducer = (state = initialState, action) => {
                 ...action.payload
             }
         case SET_REVIEWS_PERCENT:
+            return {
+                ...state,
+                ...action.payload
+            }
+        case SET_REVIEW_STATUS:
             return {
                 ...state,
                 ...action.payload
