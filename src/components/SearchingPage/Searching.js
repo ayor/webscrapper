@@ -38,14 +38,19 @@ const Searching = (props) => {
     }
 
     useEffect(() => {
-        setTimeout(() => {
-            changeMessages();
-        }, 2000);
+      let timeout =  setTimeout(
+            changeMessages
+        , 2000);
+
+
+        return ()=>{
+            clearTimeout(timeout);
+        }
     });
 
     useEffect(() => {
         let mounted = true;
-        const fetchComments = () => {
+        let fetchComments = () => {
             axiosInstance({
 
                 method: "POST",
@@ -72,7 +77,10 @@ const Searching = (props) => {
 
         fetchComments();
 
-        return () => { mounted = false; };
+        return () => {
+             mounted = false; 
+             fetchComments = () => {}
+        };
 
     }, [companyName, dispatch,props.history])
 
