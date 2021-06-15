@@ -13,7 +13,7 @@ const TotalReviews = props => {
 
     useEffect(() => {
 
-        let sse = new EventSource(`${process.env.REACT_APP_BASE_URL+"/totalreviews?company_name="+companyName}`);
+        let sse = new EventSource(`${"https://mlw-api.herokuapp.com/scrapper-api/v1/comments"+"/totalreviews?company_name="+companyName}`);
         
         const workOnData = ({ numberReviews, goodPercent, badPercent, reviewStatus }) => {
             
