@@ -114,8 +114,9 @@ const BadComments = props => {
                 </div>
             </div>
             {/* {comments.length < 10 ? <MoreButton clicked ={searchForMore.bind(this, goodPageId+1)}/> : null } */}
-            {props.isSearching ? null : (<Pagination
+            {props.isSearching ?  null : (<Pagination
                 pageId={badPageId}
+                length={comments.length}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
 
