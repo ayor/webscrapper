@@ -136,6 +136,7 @@ const GoodComments = props => {
                 pageId={goodPageId}
                 handleNextBtn={handleNextBtn}
                 handlePrevBtn={handlePrevBtn}
+                length={comments.length}
                 prevIsDisabled={__goodComments.length < 20}
                 nextIsDisabled={__goodComments.length < 20}
             />)}
