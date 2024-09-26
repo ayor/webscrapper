@@ -1,0 +1,23 @@
+.Comments{
+    animation: fade-in ease-in .7s;
+    transition: all .7s;
+}
+
+
+
+@media (max-width: 500px) {
+    .totalReviews{
+        width: 90%;
+
+    }
+    
+}
+
+@keyframes fade-in {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
